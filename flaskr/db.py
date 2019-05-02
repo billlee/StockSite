@@ -1,7 +1,7 @@
 import sqlite3
 
 import click
-from flask import current_app, g
+from flask import current_app, g, jsonify
 from flask.cli import with_appcontext
 
 
@@ -59,7 +59,6 @@ def init_companies():
     conn = None
     try:
 
-        # conn = psycopg2.connect("host='localhost' dbname='demo' user='demo' password='test'")
         conn = get_db()
             
         cur = conn.cursor()
@@ -90,13 +89,11 @@ def init_companies():
         if conn is not None:
             conn.close()
 
-
+# Function gets the weekly historic data of our company based on the company table
 def init_historical_data():
-    # Function gets the weekly historic data of our company based on the company table
     api_key = 'FR2946ZQM3HAS5WL'
     conn = None
     try:
-        # conn = psycopg2.connect("host='localhost' dbname='demo' user='demo' password='test'")
         conn = get_db() 
         cur = conn.cursor()
 
@@ -138,7 +135,7 @@ def init_historical_data():
         if conn is not None:
             conn.close()
 
-
+# Function prints out companies table in the database to see if it has been properly initialized
 def print_tables():
     conn = None
     try:
@@ -161,6 +158,7 @@ def print_tables():
         if conn is not None:
             conn.close()
 
+# Function prints out stock information for a certain stock (current initialized for AMZN)
 def print_historical_stock_info():
     ticker = "AMZN"
     conn = None
@@ -184,6 +182,46 @@ def print_historical_stock_info():
     finally:
         if conn is not None:
             conn.close()
+
+# Function receives a ticker as input and returns the historical data from the database as json
+def json_historical_data(ticker):
+    ticker = str(ticker)
+    # ticker = "AMZN"
+    conn = None
+    try:
+        conn = get_db()
+        command = "SELECT * FROM quotes WHERE ticker = ? ;"
+        data = {}
+        data["ticker"] = ticker
+        data["historical"] = True
+        data["quotes"] = []
+
+        cur = conn.cursor()
+        for row in cur.execute(command, (ticker, )):
+            quotes = {}
+            quotes["date-time"] = row[2]
+            quotes["open"] = row[3]
+            quotes["high"] = row[4]
+            quotes["low"] = row[5]
+            quotes["close"] = row[6]
+            quotes["volume"] = row[7]
+            data["quotes"].append(quotes)
+
+        cur.close()
+        jsonData = jsonify(data)
+
+        # For testing purposes
+        # for q in data["quotes"]:
+        #     print(q)
+
+        return jsonData
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        if conn is not None:
+            conn.close()
+
 
 
 @click.command('init-db')
@@ -218,6 +256,14 @@ def init_stock_print():
     print_historical_stock_info()
     click.echo('printing historical stock information')
 
+# @click.command('test-json')
+# @with_appcontext
+# def init_json_print():
+#     json_historical_data()
+#     click.echo('printing historical stock information')
+
+
+
 
 def init_app(app):
     app.teardown_appcontext(close_db)
@@ -226,3 +272,6 @@ def init_app(app):
     app.cli.add_command(init_historical_command)
     app.cli.add_command(init_companies_print)
     app.cli.add_command(init_stock_print)
+    app.cli.add_command(init_json_print)
+
+
