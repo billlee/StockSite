@@ -19,11 +19,14 @@ class LongTermPredictor:
         self.model.add(layers.Dense(256, kernel_initializer='normal',activation='relu'))
         # self.model.add(layers.Dense(256, kernel_initializer='normal',activation='relu'))
 
+
         # Output Layer
+        # self.model.add(layers.Dense(1, optimizer='adam', kernel_initializer='normal',activation='linear'))
         self.model.add(layers.Dense(1, kernel_initializer='normal',activation='linear'))
 
         # Compile model
-        self.model.compile(optimizer=tf.train.GradientDescentOptimizer(0.1),loss='mse',metrics=['mean_absolute_error'])
+        self.model.compile(loss='mean_absolute_error',optimizer='adadelta',metrics=['mean_absolute_error'])
+        # self.model.compile(optimizer=tf.train.GradientDescentOptimizer(0.1),loss='mse',metrics=['mean_absolute_error'])
 
     def __str__(self):
         self.model.summary()
@@ -48,16 +51,18 @@ class LongTermPredictor:
 
 
 def main():
-    data = np.asarray([[0,0],[0,1],[1,0],[1,1]])
-    test = np.asarray([[0,0],[0,1],[1,1]])
-    labels = np.asarray([[0],[1],[1],[0]])
+    data = np.asarray([[50,51,52,50,47.3],[30,32,32.1,34.0,35.0]])
+    test = np.asarray([[22,23,24,22.1,21]])
+    labels = np.asarray([[50.1],[36.0]])
     # data = np.random.random((1000, 64))
     # labels = np.random.random((1000, 1))
     predic = LongTermPredictor(data)
-    print(predic)
     # print(predic)
-    # predic.trainModel(data,labels)
-    # print(predic.predictPoint(test))
+    # print(predic)
+    predic.trainModel(data,labels)
+    y = predic.predictPoint(test)
+    for i in range(len(y)):
+        print(y[i])
     # output = predic.model.fit(data, labels, epochs=2000, batch_size=4)
 
 if __name__=="__main__":
