@@ -171,7 +171,7 @@ def print_historical_stock_info():
         # cur.execute(command)
         for row in cur.execute(command):
             print(str(row[0]) + " " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]) + " " + str(row[4])
-                + str(row[5]) + " " + str(row[6]) + str(row[7]))
+                +" " + str(row[5]) + " " + str(row[6]) + " " + str(row[7]))
 
         cur.close()
 
@@ -272,6 +272,6 @@ def init_app(app):
     app.cli.add_command(init_historical_command)
     app.cli.add_command(init_companies_print)
     app.cli.add_command(init_stock_print)
-    app.cli.add_command(init_json_print)
+    # app.cli.add_command(init_json_print)
 
 

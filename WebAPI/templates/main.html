@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<center>
+<h1>Welcome to the Stock Predictor App!</h1>
+<body>
+<form action = "http://localhost:5000/StockApp/historical", method="post">
+    Choose a company to see historical prices.
+    <br />
+    <br />
+    <table>
+        <tr>
+        <td><input type="image" name="ticker" value="1" src="/static/GOOG.png" alt="GOOG" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="2" src="/static/AMZN.png" alt="AMZN" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="3" src="/static/NFLX.png" alt="NFLX" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="4" src="/static/FB.png" alt="FB" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="5" src="/static/AAPL.png" alt="AAPL" width="48" height="48" border=2></td>
+        </tr>
+        <tr>
+        <td><input type="image" name="ticker" value="6" src="/static/TSLA.png" alt="TSLA" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="7" src="/static/HD.png" alt="HD" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="8" src="/static/DIS.png" alt="DIS" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="9" src="/static/KR.png" alt="KR" width="48" height="48" border=2></td>
+        <td><input type="image" name="ticker" value="10" src="/static/ATVI.png" alt="ATVI" width="48" height="48" border=2></td>
+        </tr>
+    </table>
+    <br />
+</form>
+</body>
+</center>
+</html>
+<script>
+function loadPrices(button) {
+    
+}
+</script>
