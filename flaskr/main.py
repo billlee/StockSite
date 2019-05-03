@@ -4,6 +4,8 @@ import sqlite3, requests, json, datetime
 import random as rand
 from .neuralNet import nn
 import numpy as np
+from sklearn.svm import SVC
+
 
 
 bp = Blueprint('main',__name__)
@@ -79,10 +81,7 @@ def bad_request(error):
 @bp.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
-    
-if __name__ == '__main__':
-    app.run(debug=True)
-    
+        
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
@@ -259,7 +258,6 @@ def update_real_time_data(ticker):
             test = ""
             # conn.close()
 
-from sklearn.svm import SVC
 @bp.route('/svm_predict')
 def svm_predict():
     tickers = ["GOOG"]
@@ -269,7 +267,6 @@ def svm_predict():
     raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
     raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
     print("Printing entries!")
-    # print(raw_data[0])
     for elem in raw_data:
         print(elem)
     X = raw_data
@@ -291,7 +288,15 @@ def neural_predict():
 
 @bp.route('/bayesian_predict')
 def bayesian_predict():
-    print("Hello")
-    return "4321"
+    tickers = ["GOOG"]
+    queryType = "history"
+    startDate = "2019-01-20"
+    endDate = "2019-04-20"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
 
+    print(raw_data)
+    return str(float(raw_data[0]["open"]) + rand.random())
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
