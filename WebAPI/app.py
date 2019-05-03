@@ -1,8 +1,8 @@
-from flask import Blueprint, jsonify, abort, make_response, g
+from flask import Blueprint, jsonify, abort, make_response, g, Flask
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, db, json
 
-bp = Blueprint('main',__name__)
+bp = Flask(__name__)
 
 @bp.route('/StockApp/')
 def home():
@@ -43,8 +43,6 @@ def bad_request(error):
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
     
-if __name__ == '__main__':
-    app.run(debug=True)
     
 def get_db():
     if 'db' not in g:
@@ -55,3 +53,7 @@ def get_db():
         g.db.row_factory = sqlite3.Row
 
     return g.db
+
+
+
+bp.run(debug=True)

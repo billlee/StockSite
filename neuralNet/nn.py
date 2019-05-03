@@ -1,3 +1,6 @@
+# Written by : Bill Lee
+
+
 import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
@@ -71,8 +74,8 @@ def main():
     # labels = np.random.random((1000, 1))
     predic = LongTermPredictor(data)
     # print(predic)
-    # print(predic)
-    predic.trainModel(data,labels)
+    print(predic)
+    # predic.trainModel(data,labels)
     # y = predic.predictPoint(test)
     predic.predictAndPlot(test)
     # output = predic.model.fit(data, labels, epochs=2000, batch_size=4)
