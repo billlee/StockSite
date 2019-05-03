@@ -7,14 +7,13 @@ import numpy as np
 
 bp = Blueprint('main',__name__)
 
-# def retrieve(data):
-    # global tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
-    # global dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
-    # this_data = data
-    # for i in range(len(data)):
-        # for each in data[i]['quotes']:
-            # dataset[tickers[i]].append(each)
-
+tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
+dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
+def retrieve(data):
+    this_data = data
+    for i in range(len(data)):
+        for each in data[i]['quotes']:
+            dataset[tickers[i]].append(each)
 
 @bp.route('/StockApp/')
 def home():
@@ -38,7 +37,7 @@ def priceFetchAPI():
     endDate = request.args.get('endDate')
 
     data = dict_historical_data(tickers, queryType, startDate, endDate)
-    # retrieve(data)
+    retrieve(data)
 
     return render_template('table.html', data=data, company_tickers=company_tickers, queryType= queryType)
 
