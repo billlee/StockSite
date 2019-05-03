@@ -121,3 +121,7 @@ body h2 {
 
 .run-query-button {
 }
+
+.query-table table {
+	margin: 0 auto;
+}

@@ -2,6 +2,41 @@
 {% block content %}
     {{ super() }}
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+            $(function() {
+              $('a#svm_button').bind('click', function() {
+                response = $.getJSON('/svm_predict',
+                    function(data) {
+                        console.log("Onclick handled!");
+                        $("#svm_output").text("SVM predicts " + (data == 1? "UP" : "DOWN"));
+                    });                
+                return false;
+              });
+            });
+            $(function() {
+              $('a#neural_button').bind('click', function() {
+                response = $.getJSON('/neural_predict',
+                    function(data) {
+                        console.log("Onclick handled!");
+                        $("#neural_output").text("Neural Network predicts " + data);
+                    });                
+                return false;
+              });
+            });
+            $(function() {
+              $('a#bayesian_button').bind('click', function() {
+                response = $.getJSON('/bayesian_predict',
+                    function(data) {
+                        console.log("Onclick handled!");
+                        $("#bayesian_output").text("bayesian predicts " + data);
+                    });                
+                return false;
+              });
+            });
+    </script>
+
+
     <h2>Stock data for 
     {% for t in tickers %}
     {{t}}. 
@@ -43,6 +78,36 @@
                 {% endfor %}
           </tbody>
         </table>
+    </div>
+
+    <h2> Predict the trends for {{ticker}} </h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="#" id ="neural_button"><button class="btn btn-primary">Neural Network</button></a>
+            </div>
+            <div class="col" >
+              <h4 id ="neural_output">Our neural network predicts the Open price: 99.99</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#" id="svm_button"> <button class="btn btn-dark">SVM</button> </a>
+            </div>
+            <div class="col" >
+                <h4 id="svm_output">Our SVM predicts: Nothing yet :)<h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#" id="bayesian_button"> <button class="btn btn-dark">Bayesian</button> </a>
+            </div>
+            <div class="col" >
+                <h4 id="bayesian_output">Our Bayesian Classifier predicts: Nothing yet :)<h4>
+            </div>
+        </div>
+
     </div>
 
 {% endblock %}

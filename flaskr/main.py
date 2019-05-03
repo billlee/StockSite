@@ -2,6 +2,9 @@ from flask import Blueprint, jsonify, abort, make_response, g
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime
 import random as rand
+from .neuralNet import nn
+import numpy as np
+
 
 bp = Blueprint('main',__name__)
 
@@ -255,4 +258,40 @@ def update_real_time_data(ticker):
         if conn is not None:
             test = ""
             # conn.close()
+
+from sklearn.svm import SVC
+@bp.route('/svm_predict')
+def svm_predict():
+    tickers = ["GOOG"]
+    queryType = "history"
+    startDate = "2019-01-20"
+    endDate = "2019-04-20"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
+    raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
+    print("Printing entries!")
+    # print(raw_data[0])
+    for elem in raw_data:
+        print(elem)
+    X = raw_data
+    y = [1 if X[i + 1] >= X[i] else 0 for i in range(len(X) - 1)] + [1]
+    clf = SVC(gamma='auto')
+    clf.fit(X, y)
+    result = clf.predict([X[-1]])
+    print("Hello")
+    print("The result is {}".format(result[0]))
+    return str(result[0])
+
+@bp.route('/neural_predict')
+def neural_predict():
+    data = np.asarray([[1,2,3],[4,5,6]])
+    labels = np.asarray([[1],[2]])
+    predictor = nn.LongTermPredictor(data)
+    predictor.trainModel(data,labels)
+    return str(predictor.predictPoint(data)[0])
+
+@bp.route('/bayesian_predict')
+def bayesian_predict():
+    print("Hello")
+    return "4321"
+
 
