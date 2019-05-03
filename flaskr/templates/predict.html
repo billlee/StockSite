@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    {{ super() }}
+
+
+    <h2> Predict the trends for {{ticker}} </h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="#"><button class="btn btn-primary">Neural Network</button></a>
+            </div>
+            <div class="col">
+              <h4>Our neural network predicts the Open price: 99.99</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#"> <button class="btn btn-dark">SVM</button> </a>
+            </div>
+            <div class="col">
+                <h4>Our SVM predicts the stock will go UP next week<h4>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+</body>

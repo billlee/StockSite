@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
-{% block title %} Company: {{ ticker }} {% endblock %}
 {% block content %}
     {{ super() }}
 
-    <h2>Stock data for {{ ticker }}</h2>
-
+    <h2>Stock data for 
+    {% for t in tickers %}
+    {{t}}. 
+    {% endfor %}
+    </h2>
     <div class="stock-table fixed_header">
 
         <table class="table table-sm table-striped table-fixed">
             <thead class="thead-dark">
                 <tr>
+                    {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
                     <th scope="col">Date-Time</th>
-                    <th scope="ticker">Ticker</th>
+                    {% endif %}
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Ticker</th>
                     <th scope="col">Open</th>
                     <th scope="col">High</th>
                     <th scope="col">Low</th>
@@ -23,7 +28,11 @@
                 {% for companies in data %}
                 {% for row_index in range(companies['quotes']|count) %}
                 <tr>
+                    {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
                     <th scope="row">{{ companies['quotes'][row_index]['date-time'] }} </th>
+                    {% endif %}
+                    <td>{{ company_map[companies['ticker']] }}</td>
+                    <td>{{ companies['ticker']}}</td>
                     <td>{{ companies['quotes'][row_index]['open'] }}</td>
                     <td>{{ companies['quotes'][row_index]['high'] }}</td>
                     <td>{{ companies['quotes'][row_index]['low'] }}</td>
@@ -34,33 +43,6 @@
                 {% endfor %}
           </tbody>
         </table>
-    </div>
-    <div class="real-time-button">
-        <a href="/StockApp/{{ticker}}/real-time"><button class="btn btn-danger">Get Real-Time Data</button></a>
-
-    </div>
-
-
-    <h2> Predict the trends for {{ticker}} </h2>
-
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <a href="#"><button class="btn btn-primary">Neural Network</button></a>
-            </div>
-            <div class="col">
-              <h4>Our neural network predicts the Open price: 99.99</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <a href="#"> <button class="btn btn-dark">SVM</button> </a>
-            </div>
-            <div class="col">
-                <h4>Our SVM predicts the stock will go UP next week<h4>
-            </div>
-        </div>
-
     </div>
 
 {% endblock %}
