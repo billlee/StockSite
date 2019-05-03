@@ -1,6 +1,8 @@
 # StockSite
 Software Engineering Web Applications Project
 
+
+## Server-side Instructions 
 Follow these steps to run:
 
 1. Install Flask on your system
