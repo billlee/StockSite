@@ -41,11 +41,11 @@
         var ind = id.substring(id.indexOf('.')+1);
         console.log(ind);
         switch(val) {
-            case("history"):
             case("realtime"):
                 document.getElementById("start."+ind).setAttribute("hidden",true);
                 document.getElementById("end."+ind).setAttribute("hidden",true);
                 break;
+            case("history"):
             case("high"):
             case("average"):
             case("low"):
@@ -61,22 +61,10 @@
         var clone = original.cloneNode(true);
         i++;
         clone.id = "query-table." + i;
-        clone.getElementsByClassName("drop-box")[0].id = "query." + i;
+        clone.getElementsByClassName("drop-box")[0].id = "box." + i;
         clone.getElementsByClassName("param")[0].id = "param." + i;
         clone.getElementsByClassName("start")[0].id = "start." + i;
         clone.getElementsByClassName("end")[0].id = "end." + i;
-        
-        <!-- var query = document.getElementById("query." + i); -->
-        <!-- var param = document.getElementById("param." + i); -->
-        <!-- var start = document.getElementById("start." + i); -->
-        <!-- var end = document.getElementById("end." + i); -->
-        <!-- i++; -->
-        <!-- query.id = "query." + i; -->
-        <!-- param.id = "param." + i; -->
-        <!-- start.id = "start." + i; -->
-        <!-- end.id = "end." + i; -->
-        <!-- start.setAttribute("hidden",true); -->
-        <!-- end.setAttribute("hidden",true); -->
         original.parentNode.appendChild(clone);
     }
     function remConditional() {
@@ -87,6 +75,15 @@
         var newlast = document.getElementById("query-table." + (i-1));
         newlast.parentNode.removeChild(last);
         i--;
+    }
+    function buildURL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/StockApp/<");
+        var comps = document.getElementById("box.0").children;
+        for (var j=0; j<children.length; j++){
+            sb.append(children[j].id);
+        }
+        sb.append(">/");
     }
     </script>
 </head>
@@ -108,13 +105,13 @@
             <table>
                 <tr>
                     <th>Companies:</th>
-                    <td colspan="3"><div id="query.0" class="drop-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
+                    <td colspan="3"><div id="box.0" class="drop-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
                 </tr>
                 <tr>
                     <th>Metrics:</th>
                     <td><select id="param.0" class="param" name="param" onchange="showRange(this.id,this.value)">
-                    <option value="history">Historical Prices</option>
                     <option value="realtime">Real-Time Price</option>
+                    <option value="history">Historical Prices</option>
                     <option value="high">Record High</option>
                     <option value="average">Average</option>
                     <option value="low">Record Low</option>
@@ -135,7 +132,7 @@
             <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
         </div>
         <div class="run-query-button">
-            <a href="/StockApp/GOOG/historical"><button type="submit">Run Query</button></a>
+            <a href="buildURL()"><button type="submit">Run Query</button></a>
         </div>
         <br />
         Conditionals in the query:
