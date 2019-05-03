@@ -76,15 +76,15 @@
         newlast.parentNode.removeChild(last);
         i--;
     }
-    function buildURL() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("/StockApp/<");
-        var comps = document.getElementById("box.0").children;
-        for (var j=0; j<children.length; j++){
-            sb.append(children[j].id);
-        }
-        sb.append(">/");
-    }
+    <!-- function buildURL() { -->
+        <!-- StringBuilder sb = new StringBuilder(); -->
+        <!-- sb.append("/StockApp/<"); -->
+        <!-- var comps = document.getElementById("box.0").children; -->
+        <!-- for (var j=0; j<children.length; j++){ -->
+            <!-- sb.append(children[j].id); -->
+        <!-- } -->
+        <!-- sb.append(">/"); -->
+    <!-- } -->
     </script>
 </head>
 <body>
@@ -131,9 +131,9 @@
         <div class="remove-conditional-button">
             <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
         </div>
-        <div class="run-query-button">
-            <a href="buildURL()"><button type="submit">Run Query</button></a>
-        </div>
+        <!-- <div class="run-query-button"> -->
+            <!-- <a href="buildURL()"><button type="submit">Run Query</button></a> -->
+        <!-- </div> -->
         <br />
         Conditionals in the query:
     </div>
