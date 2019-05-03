@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
+import matplotlib.pyplot as plt
 
 class LongTermPredictor:
     def __init__(self, data):
@@ -43,26 +44,36 @@ class LongTermPredictor:
 
     def predictPoint(self, test):
         '''
+        must train model before running the function
         returns the values at test array
         '''
         return self.model.predict(test)
+
+    def predictAndPlot(self, test):
+        '''
+        model must be trained before running this function
+        '''
+        nextValues = self.model.predict(test)
+        for i in range(len(test)):
+            plt.plot(np.linspace(1, len(test[i]),len(test[i])), test[i], 'ko', len(test[i])+1, nextValues[i], 'ro')
+            plt.plot(np.linspace(1,len(test[i])+1, len(test[i])+1), np.concatenate((test[i],nextValues[i])))
+        plt.savefig('test.png')
 
 
 
 
 def main():
-    data = np.asarray([[50,51,52,50,47.3],[30,32,32.1,34.0,35.0]])
-    test = np.asarray([[22,23,24,22.1,21]])
-    labels = np.asarray([[50.1],[36.0]])
+    data = np.asarray([[50,51,52,50,47.3],[30,32,32.1,34.0,35.0],[40,40,40,40,40]])
+    test = np.asarray([[22,23,24,22.1,21],[30,32,32.1,34.0,35.0],[30,30,30,30,30]])
+    labels = np.asarray([[50.1],[36.0],[40.0]])
     # data = np.random.random((1000, 64))
     # labels = np.random.random((1000, 1))
     predic = LongTermPredictor(data)
     # print(predic)
     # print(predic)
     predic.trainModel(data,labels)
-    y = predic.predictPoint(test)
-    for i in range(len(y)):
-        print(y[i])
+    # y = predic.predictPoint(test)
+    predic.predictAndPlot(test)
     # output = predic.model.fit(data, labels, epochs=2000, batch_size=4)
 
 if __name__=="__main__":
