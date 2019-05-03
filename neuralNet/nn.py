@@ -52,6 +52,7 @@ class LongTermPredictor:
     def predictAndPlot(self, test):
         '''
         model must be trained before running this function
+        outputs to a file by the name of 'test.png' to the same directory
         '''
         nextValues = self.model.predict(test)
         for i in range(len(test)):
