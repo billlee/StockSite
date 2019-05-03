@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, abort, make_response, request, render_template, redirect, url_for
-import sqlite3
-import requests
+from flask import Blueprint, jsonify, abort, make_response, g
+from flask import current_app, request, render_template, redirect, url_for
+import sqlite3, requests, db, json
 
 bp = Blueprint('main',__name__)
 
@@ -8,15 +8,23 @@ bp = Blueprint('main',__name__)
 def home():
     return render_template('main.html')
 
-@bp.route('/StockApp/historical/', methods=['GET','POST'])
+@bp.route('/StockApp/historical', methods=['GET','POST'])
 def fetch():
     if request.method == 'POST':
-        ticker = request.form.get('ticker')
+        for key in request.form:
+            if key.startswith('ticker.'):
+                ind1 = key.index('.')
+                key1 = key[ind1+1:]
+                ind2 = key1.index('.')
+                ticker = key1[:ind2]
     else:
         ticker = request.args.get('ticker', '')
-    return render_template('main.html')
+    data_json = db.json_historical_data(ticker)
+    data = json.loads(data_json.get_data(as_text=True))
+    data['quotes'] = sorted(data['quotes'], key = lambda i: i['date-time'], reverse=True)
+    return render_template('table.html',ticker=ticker,data=data)
 
-@bp.route('/StockApp/predict/', methods=['GET','POST'])
+@bp.route('/StockApp/predict', methods=['GET','POST'])
 def predict():
     if request.method == 'POST':
         ticker = request.form.get('ticker')
@@ -27,9 +35,9 @@ def predict():
         type = request.args.get('predictionType', '')
         return render_template('predict.html')
     
-# @bp.errorhandler(400)
-# def bad_request(error):
-    # return make_response(jsonify({'error': 'Bad request'}), 400)
+@bp.errorhandler(400)
+def bad_request(error):
+    return make_response(jsonify({'error': 'Bad request'}), 400)
     
 @bp.errorhandler(404)
 def not_found(error):
