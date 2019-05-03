@@ -11,9 +11,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/style.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    
     {% endblock %}
     <script>
     function allowDrop(ev) {
@@ -39,27 +39,34 @@
     }
     function showRange(id,val) {
         var ind = id.substring(id.indexOf('.')+1);
-        switch(val) {
-            case("realtime"):
-                document.getElementById("start."+ind).setAttribute("hidden",true);
-                document.getElementById("end."+ind).setAttribute("hidden",true);
-                break;
-            case("history"):
-            case("high"):
-            case("average"):
-            case("low"):
-                if(document.getElementById("start."+ind).hasAttribute("hidden")){
-                    document.getElementById("start."+ind).removeAttribute("hidden");
-                    document.getElementById("end."+ind).removeAttribute("hidden");
-                }
+        if (val == "realtime") {
+            document.getElementById("start."+ind).setAttribute("hidden",true);
+            document.getElementById("end."+ind).setAttribute("hidden",true);
+        } else {
+            if(document.getElementById("start."+ind).hasAttribute("hidden")){
+                document.getElementById("start."+ind).removeAttribute("hidden");
+                document.getElementById("end."+ind).removeAttribute("hidden");
+            }
+        }
+        
+        if(ind == "0" && val == "history") {
+            while(i > 0) {
+                remConditional();
+            }
         }
     }
     var i = 0;
     function addConditional() {
+        var param_main = document.getElementById("param.0");
+        if (param_main.value == "history") {
+            return;
+        }
+    
         var original = document.getElementById("query-table." + i);
         var clone = original.cloneNode(true);
         i++;
         clone.id = "query-table." + i;
+        
         var drop_box = clone.getElementsByClassName("drop_box")[0];
         drop_box.id = "box." + i;
         var children = drop_box.children;
@@ -70,13 +77,22 @@
                 j--;
             }
         }
+        
+        var condrow = clone.getElementsByClassName("cond-row")[0];
+        condrow.id = "cond-row." + i;
+        if (condrow.hasAttribute("hidden")) {
+            condrow.removeAttribute("hidden");
+        }
+        
         clone.getElementsByClassName("param")[0].id = "param." + i;
+        
         var start = clone.getElementsByClassName("start")[0];
         var end = clone.getElementsByClassName("end")[0];
         start.id = "start." + i;
         end.id = "end." + i;
         start.setAttribute("hidden",true);
-        end.setAttribute("hidden",false);
+        end.setAttribute("hidden",true);
+        
         original.parentNode.appendChild(clone);
     }
     function remConditional() {
@@ -114,6 +130,24 @@
         </div>
         
         <div id="query-table.0" class="query-table">
+            <div id="cond-row.0" class="cond-row" hidden>
+                <select id="param.0.0" class="param" onchange="showRange(this.id,this.value)">
+                    <option value="realtime">Real-Time Price</option>
+                    <option value="high">Record High</option>
+                    <option value="average">Average</option>
+                    <option value="low">Record Low</option>
+                </select>
+                <input type="date" id="start.0.0" class="start" name="range-start" hidden
+                   value="2018-05-03"
+                   min="1999-01-01" max="2019-05-03">
+                <input type="date" id="end.0.0" class="end" name="range-end" hidden
+                    value="2019-05-03"
+                    min="1999-01-01" max="2019-05-03">
+                <select id="dir.0.0" class="dir">
+                    <option value="greater">Is Greater Than</option>
+                    <option value="less">Is Less Than</option>
+                </select>
+            </div>
             <table>
                 <tr>
                     <th>Companies:</th>
@@ -122,11 +156,11 @@
                 <tr>
                     <th>Metrics:</th>
                     <td><select id="param.0" class="param" name="param" onchange="showRange(this.id,this.value)">
-                    <option value="realtime">Real-Time Price</option>
-                    <option value="history">Historical Prices</option>
-                    <option value="high">Record High</option>
-                    <option value="average">Average</option>
-                    <option value="low">Record Low</option>
+                        <option value="realtime">Real-Time Price</option>
+                        <option value="history">Historical Prices</option>
+                        <option value="high">Record High</option>
+                        <option value="average">Average</option>
+                        <option value="low">Record Low</option>
                     </select></td>
                     <td><input type="date" id="start.0" class="start" name="range-start" hidden
                                value="2018-05-03"
@@ -143,9 +177,9 @@
         <div class="remove-conditional-button">
             <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
         </div>
-        <!-- <div class="run-query-button"> -->
-            <!-- <a href="buildURL()"><button type="submit">Run Query</button></a> -->
-        <!-- </div> -->
+        <div class="run-query-button">
+            <a href="buildURL()"><button type="submit">Run Query</button></a>
+        </div>
         <br />
         Conditionals in the query:
     </div>
