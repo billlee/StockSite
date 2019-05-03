@@ -24,7 +24,9 @@ body {
 .image-grid img {
 	padding:1px;
 	border:1px solid #021a40;
-	background-color:#ff0;;
+	background-color:#ff0;
+    width:60px;
+    height:60px;
 }
 
 .stock-table {
@@ -82,4 +84,40 @@ body h2 {
 .container .row {
 	margin-top: 5px;
 	margin-bottom: 5px; 
+}
+
+.query-table {
+    width: 100%;
+}
+
+.drop-box {
+    margin-top: 5px;
+    padding: 5px;
+    justify-content: space-around;
+    width: 600px;
+    height: 80px;
+    border:1px solid #000000;
+}
+
+.drop-box img {
+	padding:1px;
+	border:1px solid #021a40;
+	background-color:#ff0;
+    width:60px;
+    height:60px;
+}
+
+.add-conditional-button {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2%;
+}
+
+.remove-conditional-button {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2%;
+}
+
+.run-query-button {
 }
