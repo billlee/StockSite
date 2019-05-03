@@ -39,7 +39,6 @@
     }
     function showRange(id,val) {
         var ind = id.substring(id.indexOf('.')+1);
-        console.log(ind);
         switch(val) {
             case("realtime"):
                 document.getElementById("start."+ind).setAttribute("hidden",true);
@@ -61,10 +60,23 @@
         var clone = original.cloneNode(true);
         i++;
         clone.id = "query-table." + i;
-        clone.getElementsByClassName("drop-box")[0].id = "box." + i;
+        var drop_box = clone.getElementsByClassName("drop_box")[0];
+        drop_box.id = "box." + i;
+        var children = drop_box.children;
+        for (var j=0; j<children.length; j++) {
+            var child = children[j];
+            if (child.name=="logo") {
+                drop_box.removeChild(child);
+                j--;
+            }
+        }
         clone.getElementsByClassName("param")[0].id = "param." + i;
-        clone.getElementsByClassName("start")[0].id = "start." + i;
-        clone.getElementsByClassName("end")[0].id = "end." + i;
+        var start = clone.getElementsByClassName("start")[0];
+        var end = clone.getElementsByClassName("end")[0];
+        start.id = "start." + i;
+        end.id = "end." + i;
+        start.setAttribute("hidden",true);
+        end.setAttribute("hidden",false);
         original.parentNode.appendChild(clone);
     }
     function remConditional() {
@@ -97,7 +109,7 @@
 
         <div class="image-grid">
             {% for t in company_tickers %}
-                <img id="{{t}}" src="/static/{{t}}.png" alt="{{t}}" draggable="true" ondragstart="drag(event)" border="2">
+                <img id="{{t}}" name="logo" src="/static/{{t}}.png" alt="{{t}}" draggable="true" ondragstart="drag(event)" border="2">
             {% endfor %}
         </div>
         
@@ -105,7 +117,7 @@
             <table>
                 <tr>
                     <th>Companies:</th>
-                    <td colspan="3"><div id="box.0" class="drop-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
+                    <td colspan="3"><div id="box.0" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
                 </tr>
                 <tr>
                     <th>Metrics:</th>
