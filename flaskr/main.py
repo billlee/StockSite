@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, abort, make_response, g
+from copy import deepcopy
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime
 from .neuralNet import nn
@@ -9,11 +10,27 @@ bp = Blueprint('main',__name__)
 
 tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
 dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
+predictor = nn.LongTermPredictor(np.asarray([[0,1]]))
+dataMain = None
+labelsMain = None
+
+
 def retrieve(data):
-    this_data = data
+    global predictor
+    global dataMain
+    global labelsMain
     for i in range(len(data)):
         for each in data[i]['quotes']:
-            dataset[tickers[i]].append(each)
+            dataset[tickers[i]].append(each['open'])
+    
+    length = len(dataset['GOOG'])
+    dataMain = np.asarray([dataset['GOOG'][0:length-2]])
+    labelsMain = np.asarray([[(dataset['GOOG'][length-1])]])
+    a = dataMain[:]
+    b = labelsMain[:]
+    predictor = nn.LongTermPredictor(a)
+    predictor.trainModel(a,b)
+
 
 @bp.route('/StockApp/')
 def home():
@@ -205,11 +222,7 @@ def svm_predict():
 
 @bp.route('/neural_predict')
 def neural_predict():
-    data = np.asarray([[1,2,3],[4,5,6]])
-    labels = np.asarray([[1],[2]])
-    predictor = nn.LongTermPredictor(data)
-    predictor.trainModel(data,labels)
-    return str(predictor.predictPoint(data)[0])
+    return "0"
 
 @bp.route('/bayesian_predict')
 def bayesian_predict():
