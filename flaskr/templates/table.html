@@ -10,7 +10,7 @@
                 response = $.getJSON('/svm_predict',
                     function(data) {
                         console.log("Onclick handled!");
-                        $("#svm_output").text("SVM predicts " + data);
+                        $("#svm_output").text("SVM predicts " + (data == 1? "UP" : "DOWN"));
                     });                
                 return false;
               });

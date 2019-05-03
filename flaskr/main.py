@@ -188,18 +188,24 @@ def json_realtime_data(ticker):
 from sklearn.svm import SVC
 @bp.route('/svm_predict')
 def svm_predict():
-    tickers = "GOOG"
+    tickers = ["GOOG"]
     queryType = "history"
-    startDate = "04/01/2019"
-    endDate = "04/04/2019"
-    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)
-    X = [elem['open'] for elem in raw_data]
-    y = [X[i + 1] >= X[i] for i in range(len(X) - 1)] + [True]
+    startDate = "2019-01-20"
+    endDate = "2019-04-20"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
+    raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
+    print("Printing entries!")
+    # print(raw_data[0])
+    for elem in raw_data:
+        print(elem)
+    X = raw_data
+    y = [1 if X[i + 1] >= X[i] else 0 for i in range(len(X) - 1)] + [1]
     clf = SVC(gamma='auto')
     clf.fit(X, y)
-    result = clf.predict(X[-1])
+    result = clf.predict([X[-1]])
     print("Hello")
-    return "69.78"
+    print("The result is {}".format(result[0]))
+    return str(result[0])
 
 @bp.route('/neural_predict')
 def neural_predict():
@@ -213,3 +219,6 @@ def neural_predict():
 def bayesian_predict():
     print("Hello")
     return "4321"
+
+if __name__ == "__main__":
+    bp.run(debug = True)
