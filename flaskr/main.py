@@ -42,8 +42,8 @@ def bad_request(error):
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
     
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
     
 def get_db():
     if 'db' not in g:
@@ -182,3 +182,22 @@ def json_realtime_data(ticker):
     finally:
         if conn is not None:
             conn.close()
+
+
+def svm_train():
+    pass
+
+@bp.route('/svm_predict')
+def svm_predict():
+    print("Hello")
+    return "69.78"
+
+@bp.route('/neural_predict')
+def neural_predict():
+    print("Hello")
+    return "1234"
+
+@bp.route('/bayesian_predict')
+def bayesian_predict():
+    print("Hello")
+    return "4321"
