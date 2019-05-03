@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, make_response, g
 from flask import current_app, request, render_template, redirect, url_for
-import sqlite3, requests, json
+import sqlite3, requests, json, datetime
 
 bp = Blueprint('main',__name__)
 
@@ -25,7 +25,7 @@ def fetch(ticker):
 def fetchRealTime(ticker):
     data_time = "real-time"
     tickers = get_all_tickers()
-    data_json = json_historical_data(ticker)
+    data_json = dict_historical_data(ticker)
     data = json.loads(data_json.get_data(as_text=True))
     data['quotes'] = sorted(data['quotes'], key = lambda i: i['date-time'], reverse=True)
     return render_template('table.html',ticker=ticker,data=data, company_tickers=tickers, data_time=data_time)
@@ -49,12 +49,33 @@ def predict(ticker, predict_type):
 
 
 
-@bp.route('/StockApp/fetchStockPrice?stockTicker=<ticker>&historical=<isHistorical>', methods=['GET'])
-def priceFetchAPI(ticker, isHistorical):
-    if isHistorical:
-        return json_historical_data(str(ticker))
-    else:
-        return json_realtime_data(str(ticker))
+@bp.route('/StockApp/fetchStockPrice', methods=['GET'])
+def priceFetchAPI():
+    company_tickers = get_all_tickers()
+    now = datetime.datetime.now()
+    tickers = request.args.get('tickers')
+    if tickers is not None:
+        tickers = tickers.split("-")
+
+    queryType = request.args.get('queryType')
+    if queryType is None:
+        queryType = "history"
+    
+    startDate = request.args.get('startDate')
+    # if startDate is None:
+    #     startDate =  now.strftime("%Y-%m-%d")
+
+    endDate = request.args.get('endDate')
+    # if endDate is None:
+    #     endDate = now.strftime("%Y-%m-%d")
+
+
+    data = dict_historical_data(tickers, queryType, startDate, endDate)
+    print(data)
+
+    return render_template('table.html', data=data, company_tickers=company_tickers, queryType= queryType)
+
+
 
 
     
@@ -105,34 +126,57 @@ def get_all_tickers():
 
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def json_historical_data(ticker):
-    ticker = str(ticker)
+def dict_historical_data(tickers, queryType, startDate, endDate):
+    ticker_data = []
     conn = None
+    if queryType is None:
+        queryType = "history"
     try:
+
         conn = get_db()
-        command = "SELECT * FROM quotes WHERE ticker = ? ;"
-        data = {}
-        data["ticker"] = ticker
-        data["historical"] = True
-        data["quotes"] = []
-
-        cur = conn.cursor()
-        for row in cur.execute(command, (ticker, )):
-            quotes = {}
-            quotes["date-time"] = row[2]
-            quotes["open"] = row[3]
-            quotes["high"] = row[4]
-            quotes["low"] = row[5]
-            quotes["close"] = row[6]
-            quotes["volume"] = row[7]
-            data["quotes"].append(quotes)
-
-        cur.close()
-        conn.close()
-
-        jsonData = jsonify(data)
+        for ticker in tickers:
+            command = ""
+            if queryType == "history":
+                    command = "SELECT * FROM quotes WHERE ticker = ? "
+                    
+            elif queryType == "average":
+                    command = "SELECT ticker, date-time, AVG(open), AVG(high), AVG(low), AVG(close), AVG(volume) FROM quotes WHERE ticker = ? "
+                    
+            elif queryType == "low":
+                    command = "SELECT ticker, date-time, MIN(open), MIN(high), MIN(low), MIN(close), MIN(volume) FROM quotes WHERE ticker = ? "
+                    
+            elif queryType == "high":
+                    command = "SELECT ticker, date-time, MAX(open), MAX(high), MAX(low), MAX(close), MAX(volume) FROM quotes WHERE ticker = ? "
+                    
             
-        return jsonData
+            dateCommand = ""
+            if startDate and endDate is not None:
+                dateCommand = "AND date_time >= '{}' and date_time <= '{}'".format(startDate, endDate)
+                command = command + dateCommand
+
+
+
+            command = command + ";"
+            data = {}
+            data["ticker"] = ticker
+            data["queryType"] = queryType
+            data["quotes"] = []
+
+            cur = conn.cursor()
+            for row in cur.execute(command, (ticker, )):
+                quotes = {}
+                quotes["date-time"] = row[2]
+                quotes["open"] = row[3]
+                quotes["high"] = row[4]
+                quotes["low"] = row[5]
+                quotes["close"] = row[6]
+                quotes["volume"] = row[7]
+                data["quotes"].append(quotes)
+
+            cur.close()
+            ticker_data.append(data)
+            
+        return ticker_data
 
     except sqlite3.Error as e:
         print(e)

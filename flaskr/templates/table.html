@@ -3,11 +3,7 @@
 {% block content %}
     {{ super() }}
 
-    {% if data_time == "historical" %}
-        <h2>Historical stock data for {{ ticker }}</h2>
-    {% else %}
-        <h2>Real-time stock data for {{ ticker }}</h2>
-    {% endif %}
+    <h2>Stock data for {{ ticker }}</h2>
 
     <div class="stock-table fixed_header">
 
