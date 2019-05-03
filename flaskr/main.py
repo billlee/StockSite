@@ -137,7 +137,24 @@ def dict_historical_data(tickers, queryType, startDate, endDate):
                 dateCommand = "AND date_time >= '{}' and date_time <= '{}'".format(startDate, endDate)
                 command = command + dateCommand
 
-
+            data_temp = [];
+            i = 0;
+            for cond in conds:
+                data_temp.append(dict_historical_data(cond.tickers,cond.queryType,cond.startDate,cond.endDate))
+                if cond.direction == "greater":
+                    if cond.param0 == "average":
+                        command += "AND open > (SELECT AVG(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "low":
+                        command += "AND open > (SELECT MIN(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "high":
+                        command += "AND open > (SELECT MAX(open) FROM data_temp[{}]).format(i)
+                if cond.direction == "less":
+                    if cond.param0 == "average":
+                        command += "AND open > (SELECT AVG(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "low":
+                        command += "AND open > (SELECT MIN(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "high":
+                        command += "AND open > (SELECT MAX(open) FROM data_temp[{}]).format(i)
 
             command = command + ";"
             data = {}
@@ -211,14 +228,27 @@ def json_realtime_data(ticker):
         if conn is not None:
             conn.close()
 
-
-def svm_train():
-    pass
-
+from sklearn.svm import SVC
 @bp.route('/svm_predict')
 def svm_predict():
+    tickers = ["GOOG"]
+    queryType = "history"
+    startDate = "2019-01-20"
+    endDate = "2019-04-20"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
+    raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
+    print("Printing entries!")
+    # print(raw_data[0])
+    for elem in raw_data:
+        print(elem)
+    X = raw_data
+    y = [1 if X[i + 1] >= X[i] else 0 for i in range(len(X) - 1)] + [1]
+    clf = SVC(gamma='auto')
+    clf.fit(X, y)
+    result = clf.predict([X[-1]])
     print("Hello")
-    return "69.78"
+    print("The result is {}".format(result[0]))
+    return str(result[0])
 
 @bp.route('/neural_predict')
 def neural_predict():
@@ -228,3 +258,6 @@ def neural_predict():
 def bayesian_predict():
     print("Hello")
     return "4321"
+
+if __name__ == "__main__":
+    bp.run(debug = True)
