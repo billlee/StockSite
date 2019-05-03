@@ -4,7 +4,16 @@ import sqlite3, requests, json, datetime
 from .neuralNet import nn
 import numpy as np
 
+
 bp = Blueprint('main',__name__)
+
+tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
+dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
+def retrieve(data):
+    this_data = data
+    for i in range(len(data)):
+        for each in data[i]['quotes']:
+            dataset[tickers[i]].append(each)
 
 @bp.route('/StockApp/')
 def home():
@@ -28,7 +37,7 @@ def priceFetchAPI():
     endDate = request.args.get('endDate')
 
     data = dict_historical_data(tickers, queryType, startDate, endDate)
-    print(data)
+    retrieve(data)
 
     return render_template('table.html', data=data, company_tickers=company_tickers, queryType= queryType)
 
@@ -111,7 +120,24 @@ def dict_historical_data(tickers, queryType, startDate, endDate):
                 dateCommand = "AND date_time >= '{}' and date_time <= '{}'".format(startDate, endDate)
                 command = command + dateCommand
 
-
+            data_temp = [];
+            i = 0;
+            for cond in conds:
+                data_temp.append(dict_historical_data(cond.tickers,cond.queryType,cond.startDate,cond.endDate))
+                if cond.direction == "greater":
+                    if cond.param0 == "average":
+                        command += "AND open > (SELECT AVG(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "low":
+                        command += "AND open > (SELECT MIN(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "high":
+                        command += "AND open > (SELECT MAX(open) FROM data_temp[{}]).format(i)
+                if cond.direction == "less":
+                    if cond.param0 == "average":
+                        command += "AND open > (SELECT AVG(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "low":
+                        command += "AND open > (SELECT MIN(open) FROM data_temp[{}]).format(i)
+                    if cond.param0 == "high":
+                        command += "AND open > (SELECT MAX(open) FROM data_temp[{}]).format(i)
 
             command = command + ";"
             data = {}
