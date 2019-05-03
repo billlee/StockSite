@@ -38,7 +38,7 @@ def priceFetchAPI():
     endDate = request.args.get('endDate')
 
     data = dict_historical_data(tickers, queryType, startDate, endDate)
-    retrieve(data)
+    # retrieve(data)
 
     return render_template('table.html', data=data, company_tickers=company_tickers, queryType= queryType)
 
