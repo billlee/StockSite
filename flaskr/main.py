@@ -183,12 +183,19 @@ def json_realtime_data(ticker):
         if conn is not None:
             conn.close()
 
-
-def svm_train():
-    pass
-
+from sklearn.svm import SVC
 @bp.route('/svm_predict')
 def svm_predict():
+    tickers = "GOOG"
+    queryType = "history"
+    startDate = "04/01/2019"
+    endDate = "04/04/2019"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)
+    X = [elem['open'] for elem in raw_data]
+    y = [X[i + 1] >= X[i] for i in range(len(X) - 1)] + [True]
+    clf = SVC(gamma='auto')
+    clf.fit(X, y)
+    result = clf.predict(X[-1])
     print("Hello")
     return "69.78"
 
