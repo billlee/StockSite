@@ -6,6 +6,10 @@ Follow these steps to run:
 1. Install Flask on your system
     a. In Linux, run "pip install flask"
     b. In Windows, locate installation online
+    c. On Mac OS X, run the following command (if both Python 2 and Python 3 are installed)
+```console
+foo@bar:~$ pip3 install flask
+```
 1. Navigate to "StockSite" directory
 2. Call "export FLASK_APP=flaskr"
 3. Call "flask init-db"
