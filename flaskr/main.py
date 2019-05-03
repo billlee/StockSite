@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, abort, make_response, g
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime
+from .neuralNet import nn
+import numpy as np
 
 bp = Blueprint('main',__name__)
 
@@ -201,8 +203,11 @@ def svm_predict():
 
 @bp.route('/neural_predict')
 def neural_predict():
-    print("Hello")
-    return "1234"
+    data = np.asarray([[1,2,3],[4,5,6]])
+    labels = np.asarray([[1],[2]])
+    predictor = nn.LongTermPredictor(data)
+    predictor.trainModel(data,labels)
+    return str(predictor.predictPoint(data)[0])
 
 @bp.route('/bayesian_predict')
 def bayesian_predict():
