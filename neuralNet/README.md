@@ -12,7 +12,7 @@ foo@bar:~$ pip3 install matplotlib
 ```
 To start predicting, one must create a LongTermPredictor() object
 ```python
-predictor = LongTermPredictor(data)
+predictor = nn.LongTermPredictor(data)
 ```
 The paramters to a LongTermPredictor(data), where 
 data: array_like 
