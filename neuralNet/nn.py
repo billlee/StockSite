@@ -61,6 +61,9 @@ class LongTermPredictor:
         for i in range(len(test)):
             plt.plot(np.linspace(1, len(test[i]),len(test[i])), test[i], 'ko', len(test[i])+1, nextValues[i], 'ro')
             plt.plot(np.linspace(1,len(test[i])+1, len(test[i])+1), np.concatenate((test[i],nextValues[i])))
+        plt.title('Neural Net Predictions')
+        plt.xlabel('Week')
+        plt.ylabel('Price $')
         plt.savefig('test.png')
 
 
