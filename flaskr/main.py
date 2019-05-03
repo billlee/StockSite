@@ -7,46 +7,7 @@ bp = Blueprint('main',__name__)
 @bp.route('/StockApp/')
 def home():
     tickers = get_all_tickers()
-    data_json = json_historical_data("AMZN")
-    print(data_json)
-
     return render_template('main.html', company_tickers=tickers)
-
-@bp.route('/StockApp/<ticker>/historical', methods=['GET'])
-def fetch(ticker):
-    data_time = "historical"
-    tickers = get_all_tickers()
-    data_json = json_historical_data(ticker)
-    data = json.loads(data_json.get_data(as_text=True))
-    data['quotes'] = sorted(data['quotes'], key = lambda i: i['date-time'], reverse=True)
-    return render_template('table.html',ticker=ticker,data=data, company_tickers=tickers, data_time=data_time)
-
-@bp.route('/StockApp/<ticker>/real-time', methods=['GET'])
-def fetchRealTime(ticker):
-    data_time = "real-time"
-    tickers = get_all_tickers()
-    data_json = dict_historical_data(ticker)
-    data = json.loads(data_json.get_data(as_text=True))
-    data['quotes'] = sorted(data['quotes'], key = lambda i: i['date-time'], reverse=True)
-    return render_template('table.html',ticker=ticker,data=data, company_tickers=tickers, data_time=data_time)
-
-
-@bp.route('/StockApp/<ticker>/predict/<predict_type>', methods=['GET','POST'])
-def predict(ticker, predict_type):
-    tickers = get_all_tickers()
-
-    if request.method == 'POST':
-        ticker = request.form.get('ticker')
-        predict_type = request.form.get('type')
-        return render_template('predict.html')
-    else:
-        predict_type = request.args.get('predictionType', '')
-
-        data_json = json_historical_data(ticker)
-        data = json.loads(data_json.get_data(as_text=True))
-        data['quotes'] = sorted(data['quotes'], key = lambda i: i['date-time'], reverse=True)
-        return render_template('table.html',ticker=ticker,data=data,company_tickers=tickers)
-
 
 
 @bp.route('/StockApp/fetchStockPrice', methods=['GET'])
@@ -62,13 +23,7 @@ def priceFetchAPI():
         queryType = "history"
     
     startDate = request.args.get('startDate')
-    # if startDate is None:
-    #     startDate =  now.strftime("%Y-%m-%d")
-
     endDate = request.args.get('endDate')
-    # if endDate is None:
-    #     endDate = now.strftime("%Y-%m-%d")
-
 
     data = dict_historical_data(tickers, queryType, startDate, endDate)
     print(data)

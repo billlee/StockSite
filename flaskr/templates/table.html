@@ -11,6 +11,7 @@
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Date-Time</th>
+                    <th scope="ticker">Ticker</th>
                     <th scope="col">Open</th>
                     <th scope="col">High</th>
                     <th scope="col">Low</th>
@@ -19,15 +20,17 @@
                 </tr>
             </thead>
             <tbody>
-                {% for row_index in range(data['quotes']|count) %}
+                {% for companies in data %}
+                {% for row_index in range(companies['quotes']|count) %}
                 <tr>
-                    <th scope="row">{{ data['quotes'][row_index]['date-time'] }} </th>
-                    <td>{{ data['quotes'][row_index]['open'] }}</td>
-                    <td>{{ data['quotes'][row_index]['high'] }}</td>
-                    <td>{{ data['quotes'][row_index]['low'] }}</td>
-                    <td>{{ data['quotes'][row_index]['close'] }}</td>
-                    <td>{{ data['quotes'][row_index]['volume'] }}</td>
+                    <th scope="row">{{ companies['quotes'][row_index]['date-time'] }} </th>
+                    <td>{{ companies['quotes'][row_index]['open'] }}</td>
+                    <td>{{ companies['quotes'][row_index]['high'] }}</td>
+                    <td>{{ companies['quotes'][row_index]['low'] }}</td>
+                    <td>{{ companies['quotes'][row_index]['close'] }}</td>
+                    <td>{{ companies['quotes'][row_index]['volume'] }}</td>
                 </tr>
+                {% endfor %}
                 {% endfor %}
           </tbody>
         </table>
