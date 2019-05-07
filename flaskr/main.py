@@ -11,6 +11,24 @@ from sklearn.svm import SVC
 bp = Blueprint('main',__name__)
 
 
+tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
+dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
+predictor = nn.LongTermPredictor(np.asarray([[0,1]]))
+dataMain = None
+labelsMain = None
+
+def retrieve(data):
+    global predictor
+    global dataMain
+    global labelsMain
+    for i in range(len(data)):
+        for each in data[i]['quotes']:
+            dataset[tickers[i]].append(each['open'])
+    
+    length = len(dataset['GOOG'])
+    dataMain = np.asarray([dataset['GOOG'][0:length-2]])
+    labelsMain = np.asarray([[(dataset['GOOG'][length-1])]])
+
 
 @bp.route('/StockApp/')
 def home():
@@ -46,6 +64,7 @@ def priceFetchAPI():
         endDate = request.args.get('endDate')
 
         data = dict_historical_data(tickers, queryType, startDate, endDate)
+        retrieve(data)
         return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
 
     if request.method == 'POST':
@@ -280,11 +299,15 @@ def svm_predict():
 
 @bp.route('/neural_predict')
 def neural_predict():
-    data = np.asarray([[1,2,3],[4,5,6]])
-    labels = np.asarray([[1],[2]])
-    predictor = nn.LongTermPredictor(data)
-    predictor.trainModel(data,labels)
-    return str(predictor.predictPoint(data)[0])
+    tickers = ["GOOG"]
+    queryType = "history"
+    startDate = "2019-01-20"
+    endDate = "2019-04-20"
+    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
+
+    print(raw_data)
+    return str(float(raw_data[0]["open"]) + rand.random() + 15)
+
 
 @bp.route('/bayesian_predict')
 def bayesian_predict():
