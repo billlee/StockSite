@@ -77,24 +77,37 @@ def priceFetchAPI():
                 tickers = tickers[0]
             else:
                 tickers = tickers[0:len(tickers) - 1]
-
+                
+        ind = 1;
+        conds = [];
+        while request.form.get('box.' + str(ind)) is not None:
+            ctickers = request.form.get('box.' + str(ind))
+            if ctickers is None:
+                break
+            ctickers = ctickers.split("-")
+            if len(ctickers) == 1:
+                ctickers = ctickers[0]
+            else:
+                ctickers = ctickers[0:len(ctickers) - 1]
+            
+            cqueryType = request.form.get('param.' + str(ind))
+            cstartDate = request.form.get('start.' + str(ind))
+            cendDate = request.form.get('end.' + str(ind))
+            
+            conds.append([ctickers, cqueryType, cstartDate, cendDate])
+            ind += 1
 
         queryType = request.form.get('param.0')
-
         if queryType == "realtime":
-            data = dict_real_time_data(tickers)
+            data = dict_real_time_data(tickers, conds)
             return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
-
 
         startDate = request.form.get('start.0')
         endDate = request.form.get('end.0')
-        data = dict_historical_data(tickers, queryType, startDate, endDate)
+        
+        data = dict_historical_data(tickers, queryType, startDate, endDate, conds)
         return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
-
-
-
-
-    
+        
 @bp.errorhandler(400)
 def bad_request(error):
     return make_response(jsonify({'error': 'Bad request'}), 400)
@@ -219,7 +232,7 @@ def parseRealTimeJSON(symbol, api_key):
     return data
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def dict_real_time_data(tickers):
+def dict_real_time_data(tickers, *conds):
     ticker_data = []
     conn = None
     try:
