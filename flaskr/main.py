@@ -81,20 +81,22 @@ def priceFetchAPI():
         ind = 1;
         conds = [];
         while request.form.get('box.' + str(ind)) is not None:
+            cond = {};
             ctickers = request.form.get('box.' + str(ind))
             if ctickers is None:
                 break
             ctickers = ctickers.split("-")
             if len(ctickers) == 1:
-                ctickers = ctickers[0]
+                cond['tickers'] = ctickers[0]
             else:
-                ctickers = ctickers[0:len(ctickers) - 1]
+                cond['tickers'] = ctickers[0:len(ctickers) - 1]
             
-            cqueryType = request.form.get('param.' + str(ind))
-            cstartDate = request.form.get('start.' + str(ind))
-            cendDate = request.form.get('end.' + str(ind))
+            cond['queryType'] = request.form.get('param.' + str(ind))
+            cond['startDate'] = request.form.get('start.' + str(ind))
+            cond['endDate'] = request.form.get('end.' + str(ind))
+            cond['direction'] = request.form.get('dir.' + str(ind))
             
-            conds.append([ctickers, cqueryType, cstartDate, cendDate])
+            conds.append(cond)
             ind += 1
 
         queryType = request.form.get('param.0')
@@ -152,7 +154,7 @@ def get_all_tickers():
 
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def dict_historical_data(tickers, queryType, startDate, endDate, *conds):
+def dict_historical_data(tickers, queryType, startDate, endDate, conds=[], meta=False):
     ticker_data = []
     conn = None
     if queryType is None:
@@ -165,34 +167,27 @@ def dict_historical_data(tickers, queryType, startDate, endDate, *conds):
             if queryType == "history":
                     command = "SELECT * FROM quotes WHERE ticker = ? "
                     
-            elif queryType == "average":
-                    command = "SELECT quotes_id, ticker, date_time, AVG(open), AVG(high), AVG(low), AVG(close), AVG(volume) FROM quotes WHERE ticker = ? "
-                    
-            elif queryType == "low":
-                    command = "SELECT quotes_id, ticker, date_time, MIN(open), MIN(high), MIN(low), MIN(close), MIN(volume) FROM quotes WHERE ticker = ? "
-                    
-            elif queryType == "high":
-                    command = "SELECT quotes_id, ticker, date_time, MAX(open), MAX(high), MAX(low), MAX(close), MAX(volume) FROM quotes WHERE ticker = ? "
-                    
-            
+            else:
+                if queryType == "average":
+                    param = "AVG"
+                elif queryType == "low":
+                    param = "MIN"
+                elif queryType == "high":
+                    param = "MAX"
+                command = "SELECT quotes_id, ticker, date_time, {}(open), {}(high), {}(low), {}(close), {}(volume) FROM quotes WHERE ticker = ? ".format(param,param,param,param,param)   
             dateCommand = ""
             if startDate and endDate is not None:
                 dateCommand = "AND date_time >= '{}' and date_time <= '{}'".format(startDate, endDate)
                 command = command + dateCommand
 
-            # for cond in conds:
-                # cond_data = dict_historical_data(cond.tickers, cond.queryType, cond.startDate, cond.endDate)
-                # if cond.direction == "greater":
-                    # dir = ">"
-                # else :
-                    # dir = "<"
-                # if cond.compare == "average":
-                    # comp = "AVG"
-                # elif cond.compare == "low":
-                    # comp = "MIN"
-                # elif cond.compare == "high":
-                    # comp = "MAX"
-                # condCommand = "WHERE '{}'()"
+            for cond in conds:
+                cond_data = dict_historical_data(cond['tickers'], cond['queryType'], cond['startDate'], cond['endDate'], meta=True)
+                compval = cond_data[0]['quotes'][0]['open']
+                if cond['direction'] == 'greater':
+                    compdir = '>'
+                else:
+                    compdir = '<'
+                command += "GROUP BY ticker HAVING {}(open) {} {}".format(param, compdir, compval)
 
             command = command + ";"
             data = {}
@@ -219,7 +214,7 @@ def dict_historical_data(tickers, queryType, startDate, endDate, *conds):
     except sqlite3.Error as e:
         print(e)
     finally:
-        if conn is not None:
+        if conn is not None and meta == False:
             conn.close()
 
 # Function returns JSON object of 100 quotes with the interval being 1 minute between each quote
@@ -232,7 +227,7 @@ def parseRealTimeJSON(symbol, api_key):
     return data
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def dict_real_time_data(tickers, *conds):
+def dict_real_time_data(tickers, conds=[]):
     ticker_data = []
     conn = None
     try:
@@ -255,7 +250,6 @@ def dict_real_time_data(tickers, *conds):
                 quotes["low"] = row[5]
                 quotes["close"] = row[6]
                 quotes["volume"] = row[7]
-                # print(quotes)
                 data["quotes"].append(quotes)
 
             cur.close()
