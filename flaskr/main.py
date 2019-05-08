@@ -54,7 +54,7 @@ def priceFetchAPI():
 
 
         if queryType == "realtime":
-            print("REAL TIME GET")
+            # print("REAL TIME GET")
 
             data = dict_real_time_data(tickers)
             return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
@@ -228,7 +228,7 @@ def dict_real_time_data(tickers):
                 quotes["low"] = row[5]
                 quotes["close"] = row[6]
                 quotes["volume"] = row[7]
-                print(quotes)
+                # print(quotes)
                 data["quotes"].append(quotes)
 
             cur.close()
@@ -285,16 +285,16 @@ def svm_predict():
     endDate = "2019-04-20"
     raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
     raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
-    print("Printing entries!")
-    for elem in raw_data:
-        print(elem)
+    # print("Printing entries!")
+    # for elem in raw_data:
+        # print(elem)
     X = raw_data
     y = [1 if X[i + 1] >= X[i] else 0 for i in range(len(X) - 1)] + [1]
     clf = SVC(gamma='auto')
     clf.fit(X, y)
     result = clf.predict([X[-1]])
-    print("Hello")
-    print("The result is {}".format(result[0]))
+    # print("Hello")
+    # print("The result is {}".format(result[0]))
     return str(result[0])
 
 @bp.route('/neural_predict')
@@ -305,7 +305,7 @@ def neural_predict():
     endDate = "2019-04-20"
     raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
 
-    print(raw_data)
+    # print(raw_data)
     return str(float(raw_data[0]["open"]) + rand.random() + 15)
 
 
@@ -317,7 +317,7 @@ def bayesian_predict():
     endDate = "2019-04-20"
     raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
 
-    print(raw_data)
+    # print(raw_data)
     return str(float(raw_data[0]["open"]) + rand.random())
 
 if __name__ == '__main__':
