@@ -36,12 +36,8 @@
             });
     </script>
 
-
-    <h2>Stock data for 
-    {% for t in tickers %}
-    {{t}}. 
-    {% endfor %}
-    </h2>
+    {% if data[0]['quotes']|length > 0 %}
+    <h2>Stock data:</h2>
     <div class="stock-table fixed_header">
 
         <table class="table table-sm table-striped table-fixed">
@@ -81,8 +77,6 @@
         </table>
     </div>
 
-
-
     <h2> Predict the trends for {{ticker}} </h2>
 
     <div class="container">
@@ -121,6 +115,9 @@
         </div>
 
     </div>
+    {% else %}
+    <h2>No stock data found to match criteria.</h2>
+    {% endif %}
 
 {% endblock %}
 

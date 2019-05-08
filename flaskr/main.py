@@ -81,10 +81,10 @@ def priceFetchAPI():
         ind = 1;
         conds = [];
         while request.form.get('box.' + str(ind)) is not None:
-            cond = {};
             ctickers = request.form.get('box.' + str(ind))
-            if ctickers is None:
+            if ctickers == "":
                 break
+            cond = {};
             ctickers = ctickers.split("-")
             if len(ctickers) == 1:
                 cond['tickers'] = ctickers[0]
@@ -227,7 +227,7 @@ def parseRealTimeJSON(symbol, api_key):
     return data
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def dict_real_time_data(tickers, conds=[]):
+def dict_real_time_data(tickers, conds=[], meta=False):
     ticker_data = []
     conn = None
     try:
@@ -235,8 +235,21 @@ def dict_real_time_data(tickers, conds=[]):
         conn = get_db()
         for ticker in tickers:
             update_real_time_data(ticker)
-            command = "SELECT * FROM quotes WHERE ticker = ? AND date_time >= datetime('now', '-1 days') AND date_time <= datetime('now');"
+            command = "SELECT * FROM quotes WHERE ticker = ? AND date_time >= datetime('now', '-1 days') AND date_time <= datetime('now')"
+
+            for cond in conds:
+                if cond['queryType'] != 'realtime':
+                    cond_data = dict_historical_data(cond['tickers'], cond['queryType'], cond['startDate'], cond['endDate'], meta=True) 
+                else:
+                    cond_data = dict_real_time_data(cond['tickers'], meta=True)
+                compval = cond_data[0]['quotes'][0]['open']
+                if cond['direction'] == 'greater':
+                    compdir = '>'
+                else:
+                    compdir = '<'
+                command += "GROUP BY ticker HAVING open {} {}".format(compdir, compval)
             
+            command += ";"
             data = {}
             data["ticker"] = ticker
             data["quotes"] = []
@@ -260,7 +273,7 @@ def dict_real_time_data(tickers, conds=[]):
     except sqlite3.Error as e:
         print(e)
     finally:
-        if conn is not None:
+        if conn is not None and meta == False:
             conn.close()
 
 def update_real_time_data(ticker):
