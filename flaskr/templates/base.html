@@ -141,12 +141,12 @@
         </div>
         <form id="myform" action="/StockApp/fetchStockPrice" method="post">
         <div id="query-table.0" class="query-table">
-            <select id="dir.0" class="dir" name="dir.0" width="60" height="60" topmargin="10" hidden>
-                <option value="less">&#60;</option>
-                <option value="greater">&#62;</option>
-            </select>
             <table>
                 <tr>
+                    <td rowspan="2"><select id="dir.0" class="dir" name="dir.0" width="60" height="60" topmargin="10" hidden>
+                        <option value="less">&#60;</option>
+                        <option value="greater">&#62;</option>
+                    </select></td><td/>
                     <th>Companies:</th>
                     <td colspan="3">
                         <div id="box.0" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -156,6 +156,7 @@
 
                 </tr>
                 <tr>
+                    <td/>
                     <th>Metrics:</th>
                     <td><select id="param.0" class="param" name="param.0" onchange="showRange(this.id,this.value)">
                         <option value="realtime">Real-Time Price</option>
