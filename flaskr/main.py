@@ -137,7 +137,7 @@ def get_all_tickers():
 
 
 # Function receives a ticker as input and returns the historical data from the database as json
-def dict_historical_data(tickers, queryType, startDate, endDate):
+def dict_historical_data(tickers, queryType, startDate, endDate, *conds):
     ticker_data = []
     conn = None
     if queryType is None:
@@ -165,7 +165,19 @@ def dict_historical_data(tickers, queryType, startDate, endDate):
                 dateCommand = "AND date_time >= '{}' and date_time <= '{}'".format(startDate, endDate)
                 command = command + dateCommand
 
-
+            # for cond in conds:
+                # cond_data = dict_historical_data(cond.tickers, cond.queryType, cond.startDate, cond.endDate)
+                # if cond.direction == "greater":
+                    # dir = ">"
+                # else :
+                    # dir = "<"
+                # if cond.compare == "average":
+                    # comp = "AVG"
+                # elif cond.compare == "low":
+                    # comp = "MIN"
+                # elif cond.compare == "high":
+                    # comp = "MAX"
+                # condCommand = "WHERE '{}'()"
 
             command = command + ";"
             data = {}

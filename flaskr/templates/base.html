@@ -59,13 +59,29 @@
                     document.getElementById("end."+ind).removeAttribute("hidden");
                 }
         }
+        if (ind == 0 && val=="history") {
+            while(i>0) {
+                remConditional();
+            }
+            document.getElementById("addcond").setAttribute("hidden",true);
+            document.getElementById("remcond").setAttribute("hidden",true);
+        } else {
+            if (document.getElementById("addcond").hasAttribute("hidden")){
+                document.getElementById("addcond").removeAttribute("hidden");
+                document.getElementById("remcond").removeAttribute("hidden");
+            }
+        }
     }
     var i = 0;
     function addConditional() {
         var original = document.getElementById("query-table." + i);
+        if (original.getElementsByClassName("param")[0].value == "history") {
+            return;
+        }
         var clone = original.cloneNode(true);
         i++;
         clone.id = "query-table." + i;
+        
         var drop_box = clone.getElementsByClassName("drop_box")[0];
         drop_box.id = "box." + i;
         var children = drop_box.children;
@@ -77,17 +93,21 @@
             }
         }
         drop_box.name = "box." + i;
-        clone.getElementsByClassName("param")[0].id = "param." + i;
-        clone.getElementsByClassName("param")[0].name = "param" + i;
+        
+        var param = clone.getElementsByClassName("param")[0]
+        param.id = "param." + i;
+        param.name = "param." + i;
+        param.getElementsByClassName("hist")[0].setAttribute("hidden",true);
+        
         var start = clone.getElementsByClassName("start")[0];
         var end = clone.getElementsByClassName("end")[0];
         start.id = "start." + i;
         end.id = "end." + i;
         start.name = "start." + i;
         end.name = "end." + i;
-        start.setAttribute("hidden",true);
-        end.setAttribute("hidden",false);
+        
         original.parentNode.appendChild(clone);
+        showRange(param.id, param.value);
     }
     function remConditional() {
         if (i==0) {
@@ -98,15 +118,6 @@
         newlast.parentNode.removeChild(last);
         i--;
     }
-    <!-- function buildURL() { -->
-        <!-- StringBuilder sb = new StringBuilder(); -->
-        <!-- sb.append("/StockApp/<"); -->
-        <!-- var comps = document.getElementById("box.0").children; -->
-        <!-- for (var j=0; j<children.length; j++){ -->
-            <!-- sb.append(children[j].id); -->
-        <!-- } -->
-        <!-- sb.append(">/"); -->
-    <!-- } -->
     </script>
 </head>
 <body>
@@ -133,17 +144,17 @@
                 <tr>
                     <th>Metrics:</th>
                     <td><select id="param.0" class="param" name="param.0" onchange="showRange(this.id,this.value)">
-                    <option value="history">Historical Prices</option>
                     <option value="realtime">Real-Time Price</option>
+                    <option value="history" class="hist">Historical Prices</option>
                     <option value="high">Record High</option>
                     <option value="average">Average</option>
                     <option value="low">Record Low</option>
                     </select></td>
                     <td><input type="date" id="start.0" class="start" name="start.0" 
-                               value="2018-05-03"
+                               value="2018-05-03" hidden
                                min="1999-01-01" max="2019-05-03"></td>
                     <td><input type="date" id="end.0" class="end" name="end.0"
-                        value="2019-05-03"
+                        value="2019-05-03" hidden
                         min="1999-01-01" max="2019-05-03"></td>
                 </tr>
             </table>
