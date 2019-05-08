@@ -153,8 +153,7 @@ def init_real_time_data():
 
         for ticker in tickers:
             data = parseRealTimeJSON(ticker, api_key)
-
-            time_series_data = data['Weekly Time Series']
+            time_series_data = data['Time Series (1min)']
 
             for time_data in time_series_data:
                 entry = {}
@@ -292,7 +291,7 @@ def init_historical_command():
 
 @click.command('init-real-time')
 @with_appcontext
-def init_real_time_data():
+def init_real_time_command():
     init_real_time_data()
     click.echo('Initialized real stock data for each company')
 
@@ -309,11 +308,6 @@ def init_stock_print():
     print_historical_stock_info()
     click.echo('printing historical stock information')
 
-# @click.command('test-json')
-# @with_appcontext
-# def `son_print():
-#     json_historical_data()
-#     click.echo('printing historical stock information')
 
 
 def init_app(app):
@@ -323,7 +317,5 @@ def init_app(app):
     app.cli.add_command(init_historical_command)
     app.cli.add_command(init_companies_print)
     app.cli.add_command(init_stock_print)
-    app.cli.add_command(init_real_time_data)
-    # app.cli.add_command(init_json_print)
-
+    app.cli.add_command(init_real_time_command)
 

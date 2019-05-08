@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+
+
+
     {% endblock %}
     <script>
     function allowDrop(ev) {
@@ -36,37 +40,32 @@
           ev.target.appendChild(nodeCopy);
         }
         nodeCopy.id = newId;
+        var val = ev.target.value;
+        ev.target.value = val + data + "-";
     }
     function showRange(id,val) {
         var ind = id.substring(id.indexOf('.')+1);
-        if (val == "realtime") {
-            document.getElementById("start."+ind).setAttribute("hidden",true);
-            document.getElementById("end."+ind).setAttribute("hidden",true);
-        } else {
-            if(document.getElementById("start."+ind).hasAttribute("hidden")){
-                document.getElementById("start."+ind).removeAttribute("hidden");
-                document.getElementById("end."+ind).removeAttribute("hidden");
-            }
-        }
-        
-        if(ind == "0" && val == "history") {
-            while(i > 0) {
-                remConditional();
-            }
+        switch(val) {
+            case("realtime"):
+                document.getElementById("start."+ind).setAttribute("hidden",true);
+                document.getElementById("end."+ind).setAttribute("hidden",true);
+                break;
+            case("history"):
+            case("high"):
+            case("average"):
+            case("low"):
+                if(document.getElementById("start."+ind).hasAttribute("hidden")){
+                    document.getElementById("start."+ind).removeAttribute("hidden");
+                    document.getElementById("end."+ind).removeAttribute("hidden");
+                }
         }
     }
     var i = 0;
     function addConditional() {
-        var param_main = document.getElementById("param.0");
-        if (param_main.value == "history") {
-            return;
-        }
-    
         var original = document.getElementById("query-table." + i);
         var clone = original.cloneNode(true);
         i++;
         clone.id = "query-table." + i;
-        
         var drop_box = clone.getElementsByClassName("drop_box")[0];
         drop_box.id = "box." + i;
         var children = drop_box.children;
@@ -77,22 +76,17 @@
                 j--;
             }
         }
-        
-        var condrow = clone.getElementsByClassName("cond-row")[0];
-        condrow.id = "cond-row." + i;
-        if (condrow.hasAttribute("hidden")) {
-            condrow.removeAttribute("hidden");
-        }
-        
+        drop_box.name = "box." + i;
         clone.getElementsByClassName("param")[0].id = "param." + i;
-        
+        clone.getElementsByClassName("param")[0].name = "param" + i;
         var start = clone.getElementsByClassName("start")[0];
         var end = clone.getElementsByClassName("end")[0];
         start.id = "start." + i;
         end.id = "end." + i;
+        start.name = "start." + i;
+        end.name = "end." + i;
         start.setAttribute("hidden",true);
-        end.setAttribute("hidden",true);
-        
+        end.setAttribute("hidden",false);
         original.parentNode.appendChild(clone);
     }
     function remConditional() {
@@ -106,19 +100,17 @@
     }
     <!-- function buildURL() { -->
         <!-- StringBuilder sb = new StringBuilder(); -->
-        <!-- sb.append("/StockApp?tickers="); -->
+        <!-- sb.append("/StockApp/<"); -->
         <!-- var comps = document.getElementById("box.0").children; -->
-        <!-- for (var j=0; j<children.length-1; j++){ -->
-            <!-- sb.append(children[j].id + "-"); -->
+        <!-- for (var j=0; j<children.length; j++){ -->
+            <!-- sb.append(children[j].id); -->
         <!-- } -->
-        <!-- sb.append(children[children.length-1]+"?query"); -->
+        <!-- sb.append(">/"); -->
     <!-- } -->
-    <!-- function  -->
     </script>
 </head>
 <body>
     {% block content %}
-    <form action = "http://localhost:5000/StockApp/fetchStockData" method="post">
     <div class="top-page">
         <div class="title-text">
             <h1>Welcome to the Stock Predictor App!</h1>
@@ -130,62 +122,45 @@
                 <img id="{{t}}" name="logo" src="/static/{{t}}.png" alt="{{t}}" draggable="true" ondragstart="drag(event)" border="2">
             {% endfor %}
         </div>
-        
+        <form id="myform" action="/StockApp/fetchStockPrice" method="post">
         <div id="query-table.0" class="query-table">
-            <div id="cond-row.0" class="cond-row" hidden>
-                <select id="param.0.0" class="param" onchange="showRange(this.id,this.value)">
+            <table>
+                <tr>
+                    <th>Companies:</th>
+                    <td colspan="3"><input id="box.0" name="box.0" value="" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)"></></td>
+
+                </tr>
+                <tr>
+                    <th>Metrics:</th>
+                    <td><select id="param.0" class="param" name="param.0" onchange="showRange(this.id,this.value)">
+                    <option value="history">Historical Prices</option>
                     <option value="realtime">Real-Time Price</option>
                     <option value="high">Record High</option>
                     <option value="average">Average</option>
                     <option value="low">Record Low</option>
-                </select>
-                <input type="date" id="start.0.0" class="start" name="range-start" hidden
-                   value="2018-05-03"
-                   min="1999-01-01" max="2019-05-03">
-                <input type="date" id="end.0.0" class="end" name="range-end" hidden
-                    value="2019-05-03"
-                    min="1999-01-01" max="2019-05-03">
-                <select id="dir.0.0" class="dir">
-                    <option value="greater">Is Greater Than</option>
-                    <option value="less">Is Less Than</option>
-                </select>
-            </div>
-            <table>
-                <tr>
-                    <th>Companies:</th>
-                    <td colspan="3"><div id="box.0" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
-                </tr>
-                <tr>
-                    <th>Metrics:</th>
-                    <td><select id="param.0" class="param" name="param" onchange="showRange(this.id,this.value)">
-                        <option value="realtime">Real-Time Price</option>
-                        <option value="history">Historical Prices</option>
-                        <option value="high">Record High</option>
-                        <option value="average">Average</option>
-                        <option value="low">Record Low</option>
                     </select></td>
-                    <td><input type="date" id="start.0" class="start" name="range-start" hidden
+                    <td><input type="date" id="start.0" class="start" name="start.0" 
                                value="2018-05-03"
                                min="1999-01-01" max="2019-05-03"></td>
-                    <td><input type="date" id="end.0" class="end" name="range-end" hidden
+                    <td><input type="date" id="end.0" class="end" name="end.0"
                         value="2019-05-03"
                         min="1999-01-01" max="2019-05-03"></td>
                 </tr>
             </table>
         </div>
+        </form>
         <div class="add-conditional-button">
             <button id="addcond" onclick="addConditional()">Add a Conditional</button>
         </div>
         <div class="remove-conditional-button">
             <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
         </div>
-        <div class="run-query-button">
-            <input type="submit" value="Run Query" /></p>
+        <div class="run-query-button" action =>
+            <input form="myform" type="submit" value="Run Query">
         </div>
         <br />
         Conditionals in the query:
     </div>
-    </form>
     {% endblock %}
 </body>
 </html>

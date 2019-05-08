@@ -65,6 +65,7 @@ class LongTermPredictor:
         plt.xlabel('Week')
         plt.ylabel('Price $')
         plt.savefig('test.png')
+        return nextValues
 
 
 
