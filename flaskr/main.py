@@ -45,6 +45,8 @@ def priceFetchAPI():
         tickers = request.args.get('tickers')
         if tickers is not None:
             tickers = tickers.split("-")
+        else:
+            abort(400)
 
         queryType = request.args.get('queryType')
         if queryType is None:
@@ -264,7 +266,7 @@ def update_real_time_data(ticker):
         insert_cmd = '''INSERT INTO quotes (ticker, date_time, open, high, low, close, volume) VALUES (?, ?, ?, ?, ?, ?, ?)'''
         check_exists = '''SELECT ticker, date_time FROM quotes WHERE ticker = ? AND date_time = ?'''
 
-        data = parseRealTimeJSON(ticker, api_keys[rand.randint(0, 4)])
+        data = parseRealTimeJSON(ticker, api_keys[rand.randint(0, 3)])
         time_series_data = data['Time Series (1min)']
 
         for time_data in time_series_data:

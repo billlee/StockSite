@@ -16,7 +16,6 @@ body {
 
 .image-grid {
 	display: flex;
-	/*align-items: center;*/
     justify-content: space-evenly;
     flex-direction: row;
 }
@@ -29,31 +28,28 @@ body {
     height:60px;
 }
 
-.stock-table {
-	/*display: flex;*/
-	/*align-items: center;*/
-    /*justify-content: center;*/
-    margin: 0 auto;
-}
-
 body h2 {
 	text-align: center;
 	margin-bottom: 3%;
 }
 
+.stock-table {
+    margin: 0 auto;
+}
+
 .stock-table table {
-	width: 100%;
+    width: 100%;
 }
 
 .fixed_header{
-    width: 1000px;
+    display: inline-block;
 }
 
-.fixed_header tbody{
-  display:block;
-  width: 100%;
-  overflow: auto;
-  height: 400px;
+.fixed_header tbody {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    height: 400px;
 }
 
 .fixed_header thead tr {
@@ -67,8 +63,8 @@ body h2 {
 
 .fixed_header th, .fixed_header td {
   padding: 5px;
-  text-align: left;
-  width: 400px;
+  text-align: center;
+  width: 150px;
 }
 
 .real-time-button {
@@ -107,6 +103,12 @@ body h2 {
     height:60px;
 }
 
+.button-table {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
 .add-conditional-button {
 	display: flex;
 	justify-content: center;
@@ -120,8 +122,21 @@ body h2 {
 }
 
 .run-query-button {
+    display: flex;
+	justify-content: center;
+	margin-bottom: 2%;
 }
 
 .query-table table {
 	margin: 0 auto;
+}
+
+.dir {
+    width: 60px;
+    height: 60px;
+    margin-top: 10px;
+}
+
+.dir option {
+    font-size: 20px;
 }

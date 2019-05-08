@@ -9,7 +9,7 @@
                 response = $.getJSON('/svm_predict',
                     function(data) {
                         console.log("Onclick handled!");
-                        $("#svm_output").text("SVM predicts " + (data == 1? "UP" : "DOWN"));
+                        $("#svm_output").text("Our SVM predicts: " + (data == 1? "UP" : "DOWN"));
                     });                
                 return false;
               });
@@ -19,7 +19,7 @@
                 response = $.getJSON('/neural_predict',
                     function(data) {
                         console.log("Onclick handled!");
-                        $("#neural_output").text("Neural Network predicts " + data);
+                        $("#neural_output").text("Our neural network predicts the open price: " + data);
                     });                
                 return false;
               });
@@ -29,7 +29,7 @@
                 response = $.getJSON('/bayesian_predict',
                     function(data) {
                         console.log("Onclick handled!");
-                        $("#bayesian_output").text("bayesian predicts " + data);
+                        $("#bayesian_output").text("Our Bayesian Classifier predicts: " + data);
                     });                
                 return false;
               });
@@ -68,11 +68,11 @@
                     {% endif %}
                     <td>{{ company_map[companies['ticker']] }}</td>
                     <td>{{ companies['ticker']}}</td>
-                    <td>{{ companies['quotes'][row_index]['open'] }}</td>
-                    <td>{{ companies['quotes'][row_index]['high'] }}</td>
-                    <td>{{ companies['quotes'][row_index]['low'] }}</td>
-                    <td>{{ companies['quotes'][row_index]['close'] }}</td>
-                    <td>{{ companies['quotes'][row_index]['volume'] }}</td>
+                    <td>{{ companies['quotes'][row_index]['open']|round(2)}}</td>
+                    <td>{{ companies['quotes'][row_index]['high']|round(2)}}</td>
+                    <td>{{ companies['quotes'][row_index]['low']|round(2)}}</td>
+                    <td>{{ companies['quotes'][row_index]['close']|round(2)}}</td>
+                    <td>{{ companies['quotes'][row_index]['volume']|round(2)}}</td>
                 </tr>
                 {% endfor %}
                 {% endfor %}

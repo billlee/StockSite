@@ -36,12 +36,13 @@
         }
         var nodeCopy = document.getElementById(data).cloneNode(true);
         newId = data + "." + ev.target.id;
-        if(document.getElementById(newId) == null) {
-          ev.target.appendChild(nodeCopy);
+        if(document.getElementById(newId) != null) {
+            return;
         }
+        ev.target.appendChild(nodeCopy);
         nodeCopy.id = newId;
-        var val = ev.target.value;
-        ev.target.value = val + data + "-";
+        var inputField = ev.target.getElementsByClassName("drop_input")[0]
+        inputField.value += data + "-"
     }
     function showRange(id,val) {
         var ind = id.substring(id.indexOf('.')+1);
@@ -82,8 +83,14 @@
         i++;
         clone.id = "query-table." + i;
         
+        var dir = clone.getElementsByClassName("dir")[0];
+        if (dir.hasAttribute("hidden")) {
+            dir.removeAttribute("hidden");
+        }
+        
         var drop_box = clone.getElementsByClassName("drop_box")[0];
         drop_box.id = "box." + i;
+        drop_box.getElementsByClassName("drop_input")[0].name = "box." + i;
         var children = drop_box.children;
         for (var j=0; j<children.length; j++) {
             var child = children[j];
@@ -92,7 +99,6 @@
                 j--;
             }
         }
-        drop_box.name = "box." + i;
         
         var param = clone.getElementsByClassName("param")[0]
         param.id = "param." + i;
@@ -135,20 +141,28 @@
         </div>
         <form id="myform" action="/StockApp/fetchStockPrice" method="post">
         <div id="query-table.0" class="query-table">
+            <select id="dir.0" class="dir" name="dir.0" width="60" height="60" topmargin="10" hidden>
+                <option value="less">&#60;</option>
+                <option value="greater">&#62;</option>
+            </select>
             <table>
                 <tr>
                     <th>Companies:</th>
-                    <td colspan="3"><input id="box.0" name="box.0" value="" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)"></></td>
+                    <td colspan="3">
+                        <div id="box.0" class="drop_box" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <input name="box.0" class="drop_input" value="" hidden />
+                        </div>
+                    </td>
 
                 </tr>
                 <tr>
                     <th>Metrics:</th>
                     <td><select id="param.0" class="param" name="param.0" onchange="showRange(this.id,this.value)">
-                    <option value="realtime">Real-Time Price</option>
-                    <option value="history" class="hist">Historical Prices</option>
-                    <option value="high">Record High</option>
-                    <option value="average">Average</option>
-                    <option value="low">Record Low</option>
+                        <option value="realtime">Real-Time Price</option>
+                        <option value="history" class="hist">Historical Prices</option>
+                        <option value="high">Record High</option>
+                        <option value="average">Average</option>
+                        <option value="low">Record Low</option>
                     </select></td>
                     <td><input type="date" id="start.0" class="start" name="start.0" 
                                value="2018-05-03" hidden
@@ -160,17 +174,17 @@
             </table>
         </div>
         </form>
-        <div class="add-conditional-button">
-            <button id="addcond" onclick="addConditional()">Add a Conditional</button>
-        </div>
-        <div class="remove-conditional-button">
-            <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
-        </div>
-        <div class="run-query-button" action =>
-            <input form="myform" type="submit" value="Run Query">
-        </div>
-        <br />
-        Conditionals in the query:
+        <table class="button-table"><tr>
+            <td><div class="add-conditional-button">
+                <button id="addcond" onclick="addConditional()">Add a Conditional</button>
+            </div></td>
+            <td><div class="remove-conditional-button">
+                <button id="remcond" onclick="remConditional()">Remove a Conditional</button>
+            </div></td>
+            <td><div class="run-query-button">
+                <input form="myform" type="submit" value="Run Query">
+            </div></td>
+        </tr></table>
     </div>
     {% endblock %}
 </body>
