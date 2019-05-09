@@ -2,6 +2,30 @@
 {% block content %}
     {{ super() }}
 
+    <style>
+    .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+    }
+    
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
             $(function() {
@@ -16,10 +40,12 @@
             });
             $(function() {
               $('a#neural_button').bind('click', function() {
+                $("#neural_loading").addClass("loader");
                 response = $.getJSON('/neural_predict',
                     function(data) {
                         console.log("Onclick handled!");
                         $("#neural_output").text("Our neural network predicts the open price: " + data);
+                        $("#neural_loading").removeClass("loader");
                     });                
                 return false;
               });
@@ -87,7 +113,8 @@
                 <a href="#" id ="neural_button"><button class="btn btn-primary">Neural Network</button></a>
             </div>
             <div class="col" >
-              <h4 id ="neural_output">Our neural network predicts the Open price:</h4>
+              <h4 id ="neural_output">Our neural network predicts the Open price: </h4>
+              <div id = "neural_loading"></div>
             </div>
         </div>
         <div class="row">
