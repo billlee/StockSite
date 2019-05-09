@@ -5,6 +5,7 @@ import random as rand
 from .neuralNet import nn
 import numpy as np
 from sklearn.svm import SVC
+import pickle
 
 
 

@@ -3,7 +3,7 @@ import sqlite3
 import click
 from flask import current_app, g, jsonify
 from flask.cli import with_appcontext
-
+from .neuralNet import nn
 
 import requests
 import time
@@ -44,6 +44,23 @@ def close_db(e=None):
 
     if db is not None:
         db.close()
+
+
+def train_neural_network():
+    '''
+    pretrains the neural network into a pickle
+    '''
+    tickers=['GOOG','AMZN','NFLX','FB','AAPL','TSLA','HD','DIS','KR','ATVI']
+    dataset ={'GOOG':[],'AMZN':[],'NFLX':[],'FB':[],'AAPL':[],'TSLA':[],'HD':[],'DIS':[],'KR':[],'ATVI':[]}
+    predictor = nn.LongTermPredictor(np.asarray([[0,1]]))
+    for i in range(len(data)):
+        for each in data[i]['quotes']:
+            dataset[tickers[i]].append(each['open'])
+    
+    length = len(dataset['GOOG'])
+    dataMain = np.asarray([dataset['GOOG'][0:length-2]])
+    labelsMain = np.asarray([[(dataset['GOOG'][length-1])]])
+
 
 def init_db():
     db = get_db()
