@@ -1,3 +1,6 @@
+# written by: Huafeng Fan
+# assisted by: Anton Maliev
+# debugged by: Bill Lee
 import numpy as np
 import csv
 

@@ -1,3 +1,6 @@
+# written by: Kendric Postrero
+# assisted by: Anton Maliev
+# debugged by: Bill Lee
 import psycopg2
 import data_parser
 import time

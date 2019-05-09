@@ -1,9 +1,12 @@
+# written by: Kendric Postrero
+# assisted by: Anton Maliev
+# debugged by: Bill Lee
 import sqlite3
 
 import click
 from flask import current_app, g, jsonify
 from flask.cli import with_appcontext
-from .neuralNet import nn
+from source.neuralNet import nn
 
 import requests
 import time

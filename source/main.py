@@ -1,3 +1,5 @@
+# written by: Huafeng Fan, Bill Lee, Anton Maliev, and Kendric Postrero
+# debugged by: Huafeng Fan
 from flask import Blueprint, jsonify, abort, make_response, g
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime
@@ -341,7 +343,7 @@ def bayesian_predict():
     t_vec = data_vec[1:]
     x = data_vec[-1]
     mean, var = bayesian_fit(x, x_vec, t_vec)
-    return str(mean)
+    return str(round(mean,2))
 
 if __name__ == '__main__':
     app.run(debug=True)
