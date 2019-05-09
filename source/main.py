@@ -341,7 +341,7 @@ def bayesian_predict():
     t_vec = data_vec[1:]
     x = data_vec[-1]
     mean, var = bayesian_fit(x, x_vec, t_vec)
-    return str(mean)
+    return str(round(mean,2))
 
 if __name__ == '__main__':
     app.run(debug=True)
