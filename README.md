@@ -12,6 +12,7 @@ foo@bar:~$ pip3 install virtualenv
 
 2. Create and start a virtual environment to install the necessary packages
 ```console
+foo@bar:~$ cd StockSite
 foo@bar:~$ virtualenv venv
 foo@bar:~$ source venv/bin/activate
 ```
