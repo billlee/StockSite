@@ -14,7 +14,7 @@ Follow these steps to run:
 foo@bar:~$ pip3 install flask
 ```
 1. Navigate to "StockSite" directory
-2. Call "export FLASK_APP=flaskr"
+2. Call "export FLASK_APP=source"
 3. Call "flask init-db"
 4. Call "flask init-companies"
 5. Call "flask init-historical"
@@ -22,7 +22,7 @@ foo@bar:~$ pip3 install flask
 7. In your browser, navigate to "localhost:5000/StockApp/" to access the home page
 
 ```console
-foo@bar:~$ export FLASK_APP=flaskr
+foo@bar:~$ export FLASK_APP=source
 foo@bar:~$ flask init-db
 Initialized the database.
 foo@bar:~$ flask init-companies
@@ -30,7 +30,7 @@ Initialized the database.
 foo@bar:~$ flask init-historical
 Initialized the database.
 foo@bar:~$ flask run
- * Serving Flask app "flaskr"
+ * Serving Flask app "source"
  * Environment: production
    WARNING: Do not use the development server in a production environment.
    Use a production WSGI server instead.
