@@ -33,6 +33,10 @@ body h2 {
 	margin-bottom: 3%;
 }
 
+.table-container{
+    text-align: center;
+}
+
 .stock-table {
     margin: 0 auto;
 }
@@ -73,11 +77,13 @@ body h2 {
 	margin-bottom: 2%;
 }
 
-.container {
+.predict-container {
+    text-align: center;
+    /* width: 40%; */
 	padding-bottom:2%;
 }
 
-.container .row {
+.predict-container .row {
 	margin-top: 5px;
 	margin-bottom: 5px; 
 }

@@ -38,82 +38,45 @@
 
     {% if data[0]['quotes']|length > 0 %}
     <h2>Stock data:</h2>
-    <div class="stock-table fixed_header">
+    <div class="table-container">
+        <div class="stock-table fixed_header">
 
-        <table class="table table-sm table-striped table-fixed">
-            <thead class="thead-dark">
-                <tr>
-                    {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
-                    <th scope="col">Date-Time</th>
-                    {% endif %}
-                    <th scope="col">Company Name</th>
-                    <th scope="col">Ticker</th>
-                    <th scope="col">Open</th>
-                    <th scope="col">High</th>
-                    <th scope="col">Low</th>
-                    <th scope="col">Close</th>
-                    <th scope="col">Volume</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for companies in data %}
-                {% for row_index in range(companies['quotes']|count) %}
-                <tr>
-                    {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
-                    <th scope="row">{{ companies['quotes'][row_index]['date-time'] }} </th>
-                    {% endif %}
-                    <td>{{ company_map[companies['ticker']] }}</td>
-                    <td>{{ companies['ticker']}}</td>
-                    <td>{{ companies['quotes'][row_index]['open']|round(2)}}</td>
-                    <td>{{ companies['quotes'][row_index]['high']|round(2)}}</td>
-                    <td>{{ companies['quotes'][row_index]['low']|round(2)}}</td>
-                    <td>{{ companies['quotes'][row_index]['close']|round(2)}}</td>
-                    <td>{{ companies['quotes'][row_index]['volume']|round(2)}}</td>
-                </tr>
-                {% endfor %}
-                {% endfor %}
+            <table class="table table-sm table-striped table-fixed">
+                <thead class="thead-dark">
+                    <tr>
+                        {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
+                        <th scope="col">Date-Time</th>
+                        {% endif %}
+                        <th scope="col">Company Name</th>
+                        <th scope="col">Ticker</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Close</th>
+                        <th scope="col">Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for companies in data %}
+                    {% for row_index in range(companies['quotes']|count) %}
+                    <tr>
+                        {% if queryType != "average" and queryType != "high" and  queryType != "low" %}
+                        <th scope="row">{{ companies['quotes'][row_index]['date-time'] }} </th>
+                        {% endif %}
+                        <td>{{ company_map[companies['ticker']] }}</td>
+                        <td>{{ companies['ticker']}}</td>
+                        <td>{{ companies['quotes'][row_index]['open']|round(2)}}</td>
+                        <td>{{ companies['quotes'][row_index]['high']|round(2)}}</td>
+                        <td>{{ companies['quotes'][row_index]['low']|round(2)}}</td>
+                        <td>{{ companies['quotes'][row_index]['close']|round(2)}}</td>
+                        <td>{{ companies['quotes'][row_index]['volume']|round(2)}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
 
-          </tbody>
-        </table>
-    </div>
-
-    <h2> Predict the trends for {{ticker}} </h2>
-
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <a href="#" id ="neural_button"><button class="btn btn-primary">Neural Network</button></a>
-            </div>
-            <div class="col" >
-              <h4 id ="neural_output">Our neural network predicts the Open price:</h4>
-            </div>
+              </tbody>
+            </table>
         </div>
-        <div class="row">
-            <div class="col">
-                <a href="#" id="svm_button"> <button class="btn btn-dark">SVM</button> </a>
-            </div>
-            <div class="col" >
-                <h4 id="svm_output">Our SVM predicts: Nothing yet :)<h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <a href="#" id="bayesian_button"> <button class="btn btn-dark">Bayesian</button> </a>
-            </div>
-            <div class="col" >
-                <h4 id="bayesian_output">Our Bayesian Classifier predicts: Nothing yet :)<h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <a href="https://twitter.com/intent/tweet?text=According%20to%20%23StockSite%2C%20GOOG%20is%20going%20to%20go%20up%21" target="_blank">
-                    <button class="btn btn-dark">
-                        Post to Twitter
-                    </button> 
-                </a>
-            </div>
-        </div>
-
     </div>
 
     <div class="tradingview-widget-container">
@@ -148,6 +111,45 @@
     }
       );
       </script>
+    </div>
+    
+        <h2> Predict the trends for {{ticker}} </h2>
+
+    <div class="predict-container">
+        <div class="row">
+            <div class="col">
+                <a href="#" id ="neural_button"><button class="btn btn-primary">Neural Network</button></a>
+            </div>
+            <div class="col" >
+              <h4 id ="neural_output">Our neural network predicts the Open price:</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#" id="svm_button"> <button class="btn btn-dark">SVM</button> </a>
+            </div>
+            <div class="col" >
+                <h4 id="svm_output">Our SVM predicts: Nothing yet :)<h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#" id="bayesian_button"> <button class="btn btn-dark">Bayesian</button> </a>
+            </div>
+            <div class="col" >
+                <h4 id="bayesian_output">Our Bayesian Classifier predicts: Nothing yet :)<h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="https://twitter.com/intent/tweet?text=According%20to%20%23StockSite%2C%20GOOG%20is%20going%20to%20go%20up%21" target="_blank">
+                    <button class="btn btn-dark">
+                        Post to Twitter
+                    </button> 
+                </a>
+            </div>
+        </div>
+
     </div>
     
     {% else %}
