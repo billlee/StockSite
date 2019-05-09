@@ -5,14 +5,22 @@ Software Engineering Web Applications Project
 ## Server-side Instructions 
 Follow these steps to run:
 
-1. Install Flask on your system
-    * In Linux, run "pip install flask"
-    * In Windows, locate installation online
-    * On Mac OS X, run the following command (if both Python 2 and Python 3 are installed)
-    
+1. Install virtualenv to create a virtual environment
 ```console
-foo@bar:~$ pip3 install flask
+foo@bar:~$ pip3 install virtualenv
 ```
+
+2. Create and start a virtual environment to install the necessary packages
+```console
+foo@bar:~$ virtualenv venv
+foo@bar:~$ source venv/bin/activate
+```
+
+3. Install the necessary python packages
+```console
+foo@bar:~$ pip3 install -r requirements.txt
+```
+
 1. Navigate to "StockSite" directory
 2. Call "export FLASK_APP=source"
 3. Call "flask init-db"
@@ -22,6 +30,7 @@ foo@bar:~$ pip3 install flask
 7. In your browser, navigate to "localhost:5000/StockApp/" to access the home page
 
 ```console
+foo@bar:~$ cd StockSite
 foo@bar:~$ export FLASK_APP=source
 foo@bar:~$ flask init-db
 Initialized the database.
