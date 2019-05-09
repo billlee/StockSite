@@ -3,6 +3,7 @@ from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime
 import random as rand
 from .neuralNet import nn
+from .bayesian_curve_fitting import bayesian_fit
 import numpy as np
 from sklearn.svm import SVC
 import pickle
@@ -319,22 +320,11 @@ def update_real_time_data(ticker):
 
 @bp.route('/svm_predict')
 def svm_predict():
-    tickers = ["GOOG"]
-    queryType = "history"
-    startDate = "2019-01-20"
-    endDate = "2019-04-20"
-    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
-    raw_data = np.array([elem["open"] for elem in raw_data]).reshape(-1, 1)
-    # print("Printing entries!")
-    # for elem in raw_data:
-        # print(elem)
-    X = raw_data
+    X = dataMain.reshape(-1, 1)
     y = [1 if X[i + 1] >= X[i] else 0 for i in range(len(X) - 1)] + [1]
     clf = SVC(gamma='auto')
     clf.fit(X, y)
     result = clf.predict([X[-1]])
-    # print("Hello")
-    # print("The result is {}".format(result[0]))
     return str(result[0])
 
 @bp.route('/neural_predict')
@@ -344,11 +334,14 @@ def neural_predict():
     result = predictor.predictPoint(dataMain)
     return str(round(result[0][0],2))
     
-
 @bp.route('/bayesian_predict')
 def bayesian_predict():
-    # return str(float(raw_data[0]["open"]) + rand.random())
-    return "hello"
+    data_vec = [ dataMain[0, i] for i in range(dataMain.shape[1]) if not isinstance(dataMain[0, i], str)]
+    x_vec = data_vec[:-1]
+    t_vec = data_vec[1:]
+    x = data_vec[-1]
+    mean, var = bayesian_fit(x, x_vec, t_vec)
+    return str(mean)
 
 if __name__ == '__main__':
     app.run(debug=True)
