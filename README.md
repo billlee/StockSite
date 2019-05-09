@@ -43,16 +43,25 @@ foo@bar:~$ flask run
 ```
 
 ## File Locations
+
 StockSite/csv contains the dump of our database
+
 StockSite/diagrams contains our UML and system diagram
+
 StockSite/source contains all of our code:
 
 source/database contains our database and SQL entry points
+
 source/neuralNet contains the program to run the NeuralNet predictor
+
 source/static contains the images rendered by our HTML, as well as the style.css file
+
 source/templates contains all of the HTML displayed in the UI
 
 Other Files:
+
 __init__.py is the main entrypoint for Flask
+
 main.py is the bulk of our Python code, handles all requests between API, UI, database, and predictors
+
 bayesian_curve_fitting.py is the program that run the Bayesian predictor
