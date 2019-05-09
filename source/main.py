@@ -182,7 +182,10 @@ def dict_historical_data(tickers, queryType, startDate, endDate, conds=[], meta=
                 command = command + dateCommand
 
             for cond in conds:
-                cond_data = dict_historical_data(cond['tickers'], cond['queryType'], cond['startDate'], cond['endDate'], meta=True)
+                if cond['queryType']=='realtime':
+                    cond_data = dict_real_time_data(cond['tickers'], meta=True)
+                else:
+                    cond_data = dict_historical_data(cond['tickers'], cond['queryType'], cond['startDate'], cond['endDate'], meta=True)
                 compval = cond_data[0]['quotes'][0]['open']
                 if cond['direction'] == 'greater':
                     compdir = '>'
