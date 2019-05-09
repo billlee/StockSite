@@ -30,7 +30,6 @@ def retrieve(data):
     dataMain = np.asarray([dataset['GOOG'][0:length-2]])
     labelsMain = np.asarray([[(dataset['GOOG'][length-1])]])
 
-
 @bp.route('/StockApp/')
 def home():
     tickers = get_all_tickers()
@@ -60,6 +59,7 @@ def priceFetchAPI():
             # print("REAL TIME GET")
 
             data = dict_real_time_data(tickers)
+            retrieve(data)
             return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
 
         
@@ -103,12 +103,14 @@ def priceFetchAPI():
         queryType = request.form.get('param.0')
         if queryType == "realtime":
             data = dict_real_time_data(tickers, conds)
+            retrieve(data)
             return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
 
         startDate = request.form.get('start.0')
         endDate = request.form.get('end.0')
         
         data = dict_historical_data(tickers, queryType, startDate, endDate, conds)
+        retrieve(data)
         return render_template('table.html', data=data, tickers = tickers, company_tickers=company_tickers, queryType= queryType, company_map = companies_map)
         
 @bp.errorhandler(400)
@@ -337,26 +339,16 @@ def svm_predict():
 
 @bp.route('/neural_predict')
 def neural_predict():
-    tickers = ["GOOG"]
-    queryType = "history"
-    startDate = "2019-01-20"
-    endDate = "2019-04-20"
-    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
-
-    # print(raw_data)
-    return str(float(raw_data[0]["open"]) + rand.random() + 15)
-
+    predictor = nn.LongTermPredictor(dataMain)
+    predictor.trainModel(dataMain,labelsMain)
+    result = predictor.predictPoint(dataMain)
+    return str(round(result[0][0],2))
+    
 
 @bp.route('/bayesian_predict')
 def bayesian_predict():
-    tickers = ["GOOG"]
-    queryType = "history"
-    startDate = "2019-01-20"
-    endDate = "2019-04-20"
-    raw_data = dict_historical_data(tickers, queryType, startDate, endDate)[0]["quotes"]
-
-    # print(raw_data)
-    return str(float(raw_data[0]["open"]) + rand.random())
+    # return str(float(raw_data[0]["open"]) + rand.random())
+    return "hello"
 
 if __name__ == '__main__':
     app.run(debug=True)
