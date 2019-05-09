@@ -1,3 +1,5 @@
+# written by: Huafeng Fan, Bill Lee, Anton Maliev, and Kendric Postrero
+# debugged by: Huafeng Fan
 from flask import Blueprint, jsonify, abort, make_response, g
 from flask import current_app, request, render_template, redirect, url_for
 import sqlite3, requests, json, datetime

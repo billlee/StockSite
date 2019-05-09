@@ -1,6 +1,6 @@
-# Written by : Bill Lee
-
-
+# written by: Bill Lee
+# assisted by: Huafeng Fan
+# debugged by: Anton Maliev
 import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np

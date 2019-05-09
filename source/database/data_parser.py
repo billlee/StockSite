@@ -1,3 +1,6 @@
+# written by: Kendric Postrero
+# assisted by: Anton Maliev
+# debugged by: Bill Lee
 import requests
 
 # Function returns JSON object of 100 quotes with the interval being 1 minute between each quote
