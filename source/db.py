@@ -7,6 +7,8 @@ from .neuralNet import nn
 
 import requests
 import time
+import os
+import csv
 
 
 # Function returns JSON object of 100 quotes with the interval being 1 minute between each quote
@@ -68,6 +70,35 @@ def init_db():
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
+    init_companies()
+    init_csv()
+
+
+def init_csv():
+    conn = None
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        for file in os.listdir("csv"):
+            if file.endswith(".csv"):
+                csv_file = os.path.join("csv", file)
+                with open(csv_file) as fin:
+                    readCSV = csv.reader(fin, delimiter=',')
+                    to_db = []
+                    for row in readCSV:
+                        data = (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+                        to_db.append(data)
+                cur.executemany("INSERT INTO quotes(ticker, date_time, open, high, low, close, volume) VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
+
+        conn.commit()
+
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        if conn is not None:
+            conn.close()
+
 
 def init_companies():
     db = get_db()
@@ -99,11 +130,11 @@ def init_companies():
         cur.close()
         conn.commit()
 
-    except Error as e:
+    except sqlite3.Error as e:
         print(e)
     finally:
         if conn is not None:
-            conn.close()
+            test = ""
 
 # Function gets the weekly historic data of our company based on the company table
 def init_historical_data():
@@ -149,7 +180,7 @@ def init_historical_data():
         print(e)
     finally:
         if conn is not None:
-            conn.close()
+            test = ""
 
 def init_real_time_data():
     api_key = 'FR2946ZQM3HAS5WL'
@@ -285,7 +316,6 @@ def json_historical_data(ticker):
             conn.close()
 
 
-
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
@@ -325,6 +355,12 @@ def init_stock_print():
     print_historical_stock_info()
     click.echo('printing historical stock information')
 
+@click.command('init-csv')
+@with_appcontext
+def init_csv_command():
+    init_csv()
+    click.echo('Building the database using csv files')
+
 
 
 def init_app(app):
@@ -335,4 +371,5 @@ def init_app(app):
     app.cli.add_command(init_companies_print)
     app.cli.add_command(init_stock_print)
     app.cli.add_command(init_real_time_command)
+    app.cli.add_command(init_csv_command)
 
