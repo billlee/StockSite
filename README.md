@@ -24,19 +24,13 @@ foo@bar:~$ pip3 install -r requirements.txt
 1. Navigate to "StockSite" directory
 2. Call "export FLASK_APP=source"
 3. Call "flask init-db"
-4. Call "flask init-companies"
-5. Call "flask init-historical"
-6. Call "flask run" to start the application
-7. In your browser, navigate to "localhost:5000/StockApp/" to access the home page
+4. Call "flask run" to start the application
+5. In your browser, navigate to "localhost:5000/StockApp/" to access the home page
 
 ```console
 foo@bar:~$ cd StockSite
 foo@bar:~$ export FLASK_APP=source
 foo@bar:~$ flask init-db
-Initialized the database.
-foo@bar:~$ flask init-companies
-Initialized the database.
-foo@bar:~$ flask init-historical
 Initialized the database.
 foo@bar:~$ flask run
  * Serving Flask app "source"
